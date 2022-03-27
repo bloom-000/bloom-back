@@ -9,18 +9,20 @@ import * as jwt from 'jsonwebtoken';
 export class JwtHelper {
   constructor(private readonly jwtService: JwtService) {}
 
-  generateAccessToken(payload: JwtPayload): string {
-    return this.jwtService.sign(payload, {
-      expiresIn: environment.accessTokenExpiration,
-      secret: environment.accessTokenSecret,
-    });
-  }
-
-  generateRefreshToken(payload: JwtPayload): string {
-    return this.jwtService.sign(payload, {
-      expiresIn: environment.refreshTokenExpiration,
-      secret: environment.refreshTokenSecret,
-    });
+  generateAuthenticationTokens(payload: JwtPayload): {
+    accessToken: string;
+    refreshToken;
+  } {
+    return {
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: environment.accessTokenExpiration,
+        secret: environment.accessTokenSecret,
+      }),
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: environment.refreshTokenExpiration,
+        secret: environment.refreshTokenSecret,
+      }),
+    };
   }
 
   async isRefreshTokenValid(token: string): Promise<boolean> {

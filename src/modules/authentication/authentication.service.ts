@@ -8,7 +8,6 @@ import { ExceptionMessageCode } from '../../exception/exception-message-codes.en
 import { PasswordEncoder } from './helper/password.encoder';
 import { JwtHelper } from './helper/jwt.helper';
 import { Request, Response } from 'express';
-import { AuthenticationPayloadDto } from '../../model/dto/authentication/authentication-payload.dto';
 import { AuthenticationCookieService } from './authentication-cookie.service';
 
 @Injectable()
@@ -25,7 +24,7 @@ export class AuthenticationService {
     password: string,
     request: Request,
     response: Response,
-  ): Promise<AuthenticationPayloadDto> {
+  ) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException(
@@ -43,79 +42,75 @@ export class AuthenticationService {
       );
     }
 
-    const oldRefreshToken = request.cookies?.refreshToken;
+    const oldRefreshToken =
+      this.authenticationCookieService.getRefreshToken(request);
     if (oldRefreshToken) {
       await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
-      this.authenticationCookieService.clearRefreshToken(response);
+      this.authenticationCookieService.clearAuthenticationTokenCookies(
+        response,
+      );
     }
-    const newRefreshToken = this.jwtHelper.generateRefreshToken({
-      userId: user.id,
-    });
-    await this.userService.addRefreshTokenTo(user.id, newRefreshToken);
-    this.authenticationCookieService.setRefreshTokenCookie(
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({
+        userId: user.id,
+      });
+    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    this.authenticationCookieService.persistAuthenticationTokenCookies(
       response,
-      newRefreshToken,
+      refreshToken,
+      accessToken,
     );
-
-    return {
-      accessToken: this.jwtHelper.generateAccessToken({ userId: user.id }),
-    };
   }
 
-  async refreshToken(
-    request: Request,
-    response: Response,
-  ): Promise<AuthenticationPayloadDto> {
-    const refreshToken =
+  async refreshToken(request: Request, response: Response) {
+    const oldRefreshToken =
       this.authenticationCookieService.getRefreshToken(request);
-    if (!refreshToken) {
+    if (!oldRefreshToken) {
       throw new UnauthorizedException(
         ExceptionMessageCode.MISSING_REFRESH_TOKEN,
       );
     }
 
-    this.authenticationCookieService.clearRefreshToken(response);
+    this.authenticationCookieService.clearAuthenticationTokenCookies(response);
 
-    const user = await this.userService.findByRefreshToken(refreshToken);
+    const user = await this.userService.findByRefreshToken(oldRefreshToken);
     if (!user) {
-      const decodedPayload = await this.jwtHelper.getUserPayload(refreshToken);
+      const decodedPayload = await this.jwtHelper.getUserPayload(
+        oldRefreshToken,
+      );
       await this.userService.clearRefreshTokensForUser(decodedPayload.userId);
       throw new ForbiddenException(ExceptionMessageCode.REFRESH_TOKEN_REUSE);
     }
 
-    if (!(await this.jwtHelper.isRefreshTokenValid(refreshToken))) {
-      await this.userService.removeRefreshTokenFor(user.id, refreshToken);
+    if (!(await this.jwtHelper.isRefreshTokenValid(oldRefreshToken))) {
+      await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
       throw new ForbiddenException(ExceptionMessageCode.INVALID_TOKEN);
     }
 
-    const newRefreshToken = this.jwtHelper.generateRefreshToken({
-      userId: user.id,
-    });
-    await this.userService.addRefreshTokenTo(user.id, newRefreshToken);
-    this.authenticationCookieService.setRefreshTokenCookie(
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({ userId: user.id });
+    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    this.authenticationCookieService.persistAuthenticationTokenCookies(
       response,
-      newRefreshToken,
+      refreshToken,
+      accessToken,
     );
-
-    return {
-      accessToken: this.jwtHelper.generateAccessToken({ userId: user.id }),
-    };
   }
 
   async logout(request: Request, response: Response): Promise<void> {
-    const refreshToken =
+    const oldRefreshToken =
       this.authenticationCookieService.getRefreshToken(request);
-    if (!refreshToken) {
+    if (!oldRefreshToken) {
       return;
     }
 
-    this.authenticationCookieService.clearRefreshToken(response);
-    const user = await this.userService.findByRefreshToken(refreshToken);
+    this.authenticationCookieService.clearAuthenticationTokenCookies(response);
+    const user = await this.userService.findByRefreshToken(oldRefreshToken);
     if (!user) {
       return;
     }
 
-    await this.userService.removeRefreshTokenFor(user.id, refreshToken);
+    await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
   }
 
   async validateAuthentication(request: Request) {

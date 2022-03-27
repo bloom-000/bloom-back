@@ -3,7 +3,7 @@ import { AuthenticationService } from './authentication.service';
 import { PasswordEncoder } from './helper/password.encoder';
 import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
+import { BearerHeaderJwtStrategy } from './bearer-header-jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { environment } from '../../environment';
 import { JwtHelper } from './helper/jwt.helper';
@@ -23,7 +23,7 @@ import { AuthenticationCookieService } from './authentication-cookie.service';
   providers: [
     AuthenticationService,
     PasswordEncoder,
-    JwtStrategy,
+    BearerHeaderJwtStrategy,
     JwtHelper,
     AuthenticationCookieService,
   ],
