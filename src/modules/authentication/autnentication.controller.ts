@@ -19,8 +19,17 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('/sign-in')
-  async signIn(@Body() body: SignInDto) {
-    return this.authenticationService.signIn(body);
+  async signIn(
+    @Body() body: SignInDto,
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    return this.authenticationService.signIn(
+      body.email,
+      body.password,
+      request,
+      response,
+    );
   }
 
   @Post('/refresh')
@@ -32,6 +41,12 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() request: Request, @Res() response: Response) {
     return this.authenticationService.logout(request, response);
+  }
+
+  @Get('/authenticated')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async getIsAuthenticated(@Req() request: Request): Promise<void> {
+    return this.authenticationService.validateAuthentication(request);
   }
 
   @UseGuards(JwtAuthGuard)

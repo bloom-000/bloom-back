@@ -117,4 +117,14 @@ export class AuthenticationService {
 
     await this.userService.removeRefreshTokenFor(user.id, refreshToken);
   }
+
+  async validateAuthentication(request: Request) {
+    const refreshToken =
+      this.authenticationCookieService.getRefreshToken(request);
+    if (!refreshToken) {
+      throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
+    }
+
+    await this.jwtHelper.validateToken(refreshToken);
+  }
 }

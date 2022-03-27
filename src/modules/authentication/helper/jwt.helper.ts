@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { environment } from '../../../environment';
 import { JwtPayload, UserPayload } from '../../../model/common/user.payload';
+import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class JwtHelper {
@@ -36,27 +38,27 @@ export class JwtHelper {
     return false;
   }
 
-  // async validateToken(token: string): Promise<boolean> {
-  //   if (!token) {
-  //     throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
-  //   }
-  //
-  //   await jwt.verify(
-  //     token,
-  //     environment.accessTokenSecret,
-  //     async (err: jwt.VerifyErrors) => {
-  //       if (err instanceof jwt.TokenExpiredError) {
-  //         throw new UnauthorizedException(ExceptionMessageCode.EXPIRED_TOKEN);
-  //       }
-  //
-  //       if (err instanceof jwt.JsonWebTokenError) {
-  //         throw new UnauthorizedException(ExceptionMessageCode.INVALID_TOKEN);
-  //       }
-  //     },
-  //   );
-  //
-  //   return true;
-  // }
+  async validateToken(token: string): Promise<boolean> {
+    if (!token) {
+      throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
+    }
+
+    await jwt.verify(
+      token,
+      environment.accessTokenSecret,
+      async (err: jwt.VerifyErrors) => {
+        if (err instanceof jwt.TokenExpiredError) {
+          throw new UnauthorizedException(ExceptionMessageCode.EXPIRED_TOKEN);
+        }
+
+        if (err instanceof jwt.JsonWebTokenError) {
+          throw new UnauthorizedException(ExceptionMessageCode.INVALID_TOKEN);
+        }
+      },
+    );
+
+    return true;
+  }
 
   async getUserPayload(jwtToken: string): Promise<UserPayload | undefined> {
     const payload = this.jwtService.decode(jwtToken);
