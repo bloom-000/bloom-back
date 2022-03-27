@@ -9,6 +9,7 @@ import { PasswordEncoder } from './helper/password.encoder';
 import { JwtHelper } from './helper/jwt.helper';
 import { Request, Response } from 'express';
 import { AuthenticationPayloadDto } from '../../model/dto/authentication/authentication-payload.dto';
+import { AuthenticationCookieService } from './authentication-cookie.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,13 +17,16 @@ export class AuthenticationService {
     private readonly userService: UserService,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly jwtHelper: JwtHelper,
+    private readonly authenticationCookieService: AuthenticationCookieService,
   ) {}
 
-  async signIn(params: {
-    email: string;
-    password: string;
-  }): Promise<AuthenticationPayloadDto> {
-    const user = await this.userService.findByEmail(params.email);
+  async signIn(
+    email: string,
+    password: string,
+    request: Request,
+    response: Response,
+  ): Promise<AuthenticationPayloadDto> {
+    const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException(
         ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
@@ -30,7 +34,7 @@ export class AuthenticationService {
     }
 
     const passwordMatches = await this.passwordEncoder.matches(
-      params.password,
+      password,
       user.password,
     );
     if (!passwordMatches) {
@@ -39,9 +43,22 @@ export class AuthenticationService {
       );
     }
 
+    const oldRefreshToken = request.cookies?.refreshToken;
+    if (oldRefreshToken) {
+      await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
+      this.authenticationCookieService.clearRefreshToken(response);
+    }
+    const newRefreshToken = this.jwtHelper.generateRefreshToken({
+      userId: user.id,
+    });
+    await this.userService.addRefreshTokenTo(user.id, newRefreshToken);
+    this.authenticationCookieService.setRefreshTokenCookie(
+      response,
+      newRefreshToken,
+    );
+
     return {
       accessToken: this.jwtHelper.generateAccessToken({ userId: user.id }),
-      refreshToken: this.jwtHelper.generateRefreshToken({ userId: user.id }),
     };
   }
 
@@ -49,18 +66,15 @@ export class AuthenticationService {
     request: Request,
     response: Response,
   ): Promise<AuthenticationPayloadDto> {
-    const refreshToken = request.cookies?.refreshToken;
+    const refreshToken =
+      this.authenticationCookieService.getRefreshToken(request);
     if (!refreshToken) {
       throw new UnauthorizedException(
         ExceptionMessageCode.MISSING_REFRESH_TOKEN,
       );
     }
 
-    response.clearCookie('refreshToken', {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
+    this.authenticationCookieService.clearRefreshToken(response);
 
     const user = await this.userService.findByRefreshToken(refreshToken);
     if (!user) {
@@ -78,16 +92,29 @@ export class AuthenticationService {
       userId: user.id,
     });
     await this.userService.addRefreshTokenTo(user.id, newRefreshToken);
-
-    response.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      expires: new Date(new Date().getTime() + 86409000), // never
-    });
+    this.authenticationCookieService.setRefreshTokenCookie(
+      response,
+      newRefreshToken,
+    );
 
     return {
       accessToken: this.jwtHelper.generateAccessToken({ userId: user.id }),
-      refreshToken: newRefreshToken,
     };
+  }
+
+  async logout(request: Request, response: Response): Promise<void> {
+    const refreshToken =
+      this.authenticationCookieService.getRefreshToken(request);
+    if (!refreshToken) {
+      return;
+    }
+
+    this.authenticationCookieService.clearRefreshToken(response);
+    const user = await this.userService.findByRefreshToken(refreshToken);
+    if (!user) {
+      return;
+    }
+
+    await this.userService.removeRefreshTokenFor(user.id, refreshToken);
   }
 }

@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -24,6 +26,12 @@ export class AuthenticationController {
   @Post('/refresh')
   async refresh(@Req() request: Request, @Res() response: Response) {
     return this.authenticationService.refreshToken(request, response);
+  }
+
+  @Post('/logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Req() request: Request, @Res() response: Response) {
+    return this.authenticationService.logout(request, response);
   }
 
   @UseGuards(JwtAuthGuard)
