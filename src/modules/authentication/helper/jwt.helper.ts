@@ -1,22 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { environment } from '../../../environment';
-import { UserPayload } from '../../../model/common/user.payload';
+import { JwtPayload, UserPayload } from '../../../model/common/user.payload';
 
 @Injectable()
 export class JwtHelper {
   constructor(private readonly jwtService: JwtService) {}
 
-  public generateAccessToken(userId: number): string {
-    const payload = { userId };
-
+  generateAccessToken(payload: JwtPayload): string {
     return this.jwtService.sign(payload, {
       expiresIn: environment.accessTokenExpiration,
       secret: environment.accessTokenSecret,
     });
   }
 
-  // public async validateToken(token: string): Promise<boolean> {
+  generateRefreshToken(payload: JwtPayload): string {
+    return this.jwtService.sign(payload, {
+      expiresIn: environment.refreshTokenExpiration,
+      secret: environment.refreshTokenSecret,
+    });
+  }
+
+  async isRefreshTokenValid(token: string): Promise<boolean> {
+    if (!token) {
+      return false;
+    }
+    try {
+      await this.jwtService.verifyAsync(token, {
+        secret: environment.accessTokenSecret,
+        ignoreExpiration: false,
+      });
+      return true;
+    } catch (e) {}
+
+    return false;
+  }
+
+  // async validateToken(token: string): Promise<boolean> {
   //   if (!token) {
   //     throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
   //   }
@@ -38,9 +58,7 @@ export class JwtHelper {
   //   return true;
   // }
 
-  public async getUserPayload(
-    jwtToken: string,
-  ): Promise<UserPayload | undefined> {
+  async getUserPayload(jwtToken: string): Promise<UserPayload | undefined> {
     const payload = this.jwtService.decode(jwtToken);
 
     if (

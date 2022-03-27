@@ -3,3 +3,7 @@ export interface UserPayload {
   issuedAt?: number;
   expirationTime?: number;
 }
+
+export interface JwtPayload {
+  userId: number;
+}
