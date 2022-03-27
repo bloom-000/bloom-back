@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { environment } from '../../environment';
 import { JwtHelper } from './helper/jwt.helper';
 import { AuthenticationController } from './autnentication.controller';
+import { AuthenticationCookieService } from './authentication-cookie.service';
 
 @Module({
   imports: [
@@ -19,6 +20,12 @@ import { AuthenticationController } from './autnentication.controller';
     }),
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, PasswordEncoder, JwtStrategy, JwtHelper],
+  providers: [
+    AuthenticationService,
+    PasswordEncoder,
+    JwtStrategy,
+    JwtHelper,
+    AuthenticationCookieService,
+  ],
 })
 export class AuthenticationModule {}

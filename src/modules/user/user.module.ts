@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
-import { PasswordEncoder } from '../authentication/helper/password.encoder';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserRepository } from './user.repository';
 
 @Module({
-  providers: [UserService, PasswordEncoder],
+  imports: [TypeOrmModule.forFeature([UserRepository])],
+  providers: [UserService],
   exports: [UserService],
 })
 export class UserModule {}

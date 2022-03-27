@@ -1,71 +1,32 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PasswordEncoder } from '../authentication/helper/password.encoder';
-
-export interface User {
-  id: number;
-  email: string;
-  password: string;
-  refreshTokens: string[];
-}
+import { Injectable } from '@nestjs/common';
+import { UserRepository } from './user.repository';
+import { User } from '../../model/entity/user.entity';
 
 @Injectable()
-export class UserService implements OnModuleInit {
-  constructor(private readonly passwordEncoder: PasswordEncoder) {}
-
-  private users: User[] = [];
+export class UserService {
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find((e) => e.email === email);
-  }
-
-  async onModuleInit() {
-    const password = await this.passwordEncoder.encode('password');
-
-    this.users.push(
-      {
-        id: 1,
-        email: 'test@gmai.com',
-        password: password,
-        refreshTokens: [],
-      },
-      {
-        id: 2,
-        email: 'email@gmail.com',
-        password: password,
-        refreshTokens: [],
-      },
-    );
+    return this.userRepository.findByEmail(email);
   }
 
   async findByRefreshToken(refreshToken: string): Promise<User | undefined> {
-    return this.users.find((e) => e.refreshTokens.includes(refreshToken));
+    return this.userRepository.findByRefreshToken(refreshToken);
   }
 
-  async clearRefreshTokensForUser(userId: number) {
-    const user = this.users.find((e) => e.id === userId);
-    const newUser: User = { ...user, refreshTokens: [] };
-    this.users = this.users.filter((e) => e.id !== userId);
-    this.users.push(newUser);
-  }
-
-  async removeRefreshTokenFor(userId: number, refreshToken: string) {
-    const user = this.users.find((e) => e.id === userId);
-    const newUser: User = {
-      ...user,
-      refreshTokens: user.refreshTokens.filter((rt) => rt !== refreshToken),
-    };
-    this.users = this.users.filter((e) => e.id !== userId);
-    this.users.push(newUser);
+  async clearRefreshTokensForUser(userId: number): Promise<void> {
+    return this.userRepository.updateRefreshTokens(userId, []);
   }
 
   async addRefreshTokenTo(userId: number, refreshToken: string) {
-    const user = this.users.find((e) => e.id === userId);
-    const newRefreshTokens = [...user.refreshTokens, refreshToken];
-    const newUser: User = {
-      ...user,
-      refreshTokens: newRefreshTokens,
-    };
-    this.users = this.users.filter((e) => e.id !== userId);
-    this.users.push(newUser);
+    const refreshTokens = await this.userRepository.getRefreshTokensFor(userId);
+    refreshTokens.push(refreshToken);
+    return this.userRepository.updateRefreshTokens(userId, refreshTokens);
+  }
+
+  async removeRefreshTokenFor(userId: number, refreshToken: string) {
+    const refreshTokens = await this.userRepository.getRefreshTokensFor(userId);
+    const newRefreshTokens = refreshTokens.filter((e) => e !== refreshToken);
+    return this.userRepository.updateRefreshTokens(userId, newRefreshTokens);
   }
 }
