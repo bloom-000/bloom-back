@@ -10,13 +10,9 @@ export class AuthenticationCookieService {
   clearAuthenticationTokenCookies(response: Response) {
     response.clearCookie(AuthenticationCookieService.KEY_REFRESH_TOKEN, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
     });
     response.clearCookie(AuthenticationCookieService.KEY_ACCESS_TOKEN, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
     });
   }
 
@@ -27,8 +23,6 @@ export class AuthenticationCookieService {
   ) {
     const options: CookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
       expires: new Date(new Date().getTime() + 86409000), // never
     };
 

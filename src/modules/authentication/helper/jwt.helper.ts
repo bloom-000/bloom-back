@@ -11,7 +11,7 @@ export class JwtHelper {
 
   generateAuthenticationTokens(payload: JwtPayload): {
     accessToken: string;
-    refreshToken;
+    refreshToken: string;
   } {
     return {
       accessToken: this.jwtService.sign(payload, {
@@ -40,14 +40,14 @@ export class JwtHelper {
     return false;
   }
 
-  async validateToken(token: string): Promise<boolean> {
+  async validateRefreshToken(token: string): Promise<boolean> {
     if (!token) {
       throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
     }
 
     await jwt.verify(
       token,
-      environment.accessTokenSecret,
+      environment.refreshTokenSecret,
       async (err: jwt.VerifyErrors) => {
         if (err instanceof jwt.TokenExpiredError) {
           throw new UnauthorizedException(ExceptionMessageCode.EXPIRED_TOKEN);

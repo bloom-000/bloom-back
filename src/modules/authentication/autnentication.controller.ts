@@ -37,15 +37,15 @@ export class AuthenticationController {
     return this.authenticationService.refreshToken(request, response);
   }
 
-  @Post('/logout')
+  @Post('/sign-out')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Req() request: Request, @Res() response: Response) {
     return this.authenticationService.logout(request, response);
   }
 
-  @Get('/authenticated')
+  @Get('/status')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async getIsAuthenticated(@Req() request: Request): Promise<void> {
+  async getAuthenticationStatus(@Req() request: Request): Promise<void> {
     return this.authenticationService.validateAuthentication(request);
   }
 

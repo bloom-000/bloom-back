@@ -60,6 +60,7 @@ export class AuthenticationService {
       refreshToken,
       accessToken,
     );
+    response.send();
   }
 
   async refreshToken(request: Request, response: Response) {
@@ -95,6 +96,7 @@ export class AuthenticationService {
       refreshToken,
       accessToken,
     );
+    response.send();
   }
 
   async logout(request: Request, response: Response): Promise<void> {
@@ -111,6 +113,7 @@ export class AuthenticationService {
     }
 
     await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
+    response.send();
   }
 
   async validateAuthentication(request: Request) {
@@ -120,6 +123,6 @@ export class AuthenticationService {
       throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
     }
 
-    await this.jwtHelper.validateToken(refreshToken);
+    await this.jwtHelper.validateRefreshToken(refreshToken);
   }
 }
