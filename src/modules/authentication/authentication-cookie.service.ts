@@ -49,6 +49,6 @@ export class AuthenticationCookieService {
     if (!request || !request.cookies) {
       return undefined;
     }
-    return request.cookies[AuthenticationCookieService.KEY_REFRESH_TOKEN];
+    return request.cookies[AuthenticationCookieService.KEY_ACCESS_TOKEN];
   }
 }

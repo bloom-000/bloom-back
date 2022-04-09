@@ -7,7 +7,7 @@ import { AuthenticationCookieService } from './authentication-cookie.service';
 @Injectable()
 export class CookieJwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private authenticationCookieService: AuthenticationCookieService,
+    private readonly authenticationCookieService: AuthenticationCookieService,
   ) {
     super({
       jwtFromRequest: (req) =>

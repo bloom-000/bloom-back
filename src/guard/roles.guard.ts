@@ -4,6 +4,7 @@ import { Role } from '../model/common/role.enum';
 import { ROLES_KEY } from '../decorator/roles.decorator';
 import { UserService } from '../modules/user/user.service';
 import { JwtHelper } from '../modules/authentication/helper/jwt.helper';
+import { AuthenticationCookieService } from '../modules/authentication/authentication-cookie.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -11,6 +12,7 @@ export class RolesGuard implements CanActivate {
     private readonly reflector: Reflector,
     private readonly userService: UserService,
     private readonly jwtHelper: JwtHelper,
+    private readonly authenticationCookieService: AuthenticationCookieService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,9 +28,12 @@ export class RolesGuard implements CanActivate {
     const authorizationHeader =
       request.headers['authorization'] || request.headers['Authorization'];
 
-    const jwtToken = authorizationHeader?.slice('Bearer '.length);
+    let jwtToken = authorizationHeader?.slice('Bearer '.length);
     if (!jwtToken) {
-      return false;
+      jwtToken = this.authenticationCookieService.getAccessToken(request);
+      if (!jwtToken) {
+        return false;
+      }
     }
 
     const { userId } = await this.jwtHelper.getUserPayload(jwtToken);

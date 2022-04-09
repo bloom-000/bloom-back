@@ -18,9 +18,10 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('eCom')
-    .setDescription('eCom api documentation')
+    .setTitle('eCom API')
+    .setDescription('eCom API Docs')
     .setVersion('1.0')
+    .addCookieAuth('access_token')
     .build();
 
   const options: SwaggerCustomOptions = {
@@ -28,7 +29,6 @@ async function bootstrap() {
       persistAuthorization: true,
       docExpansion: 'none',
     },
-    customSiteTitle: 'eCom API Docs',
   };
 
   const document = SwaggerModule.createDocument(app, config);
