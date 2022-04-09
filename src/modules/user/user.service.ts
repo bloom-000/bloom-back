@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from '../../model/entity/user.entity';
+import { Role } from '../../model/common/role.enum';
+import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 
 @Injectable()
 export class UserService {
@@ -28,5 +30,14 @@ export class UserService {
     const refreshTokens = await this.userRepository.getRefreshTokensFor(userId);
     const newRefreshTokens = refreshTokens.filter((e) => e !== refreshToken);
     return this.userRepository.updateRefreshTokens(userId, newRefreshTokens);
+  }
+
+  async getRolesForUser(userId: number): Promise<Role[]> {
+    const roles = await this.userRepository.getRolesForUser(userId);
+    if (!roles) {
+      throw new NotFoundException(ExceptionMessageCode.USER_NOT_FOUND);
+    }
+
+    return roles;
   }
 }

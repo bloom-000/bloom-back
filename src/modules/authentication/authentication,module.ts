@@ -27,5 +27,6 @@ import { AuthenticationCookieService } from './authentication-cookie.service';
     JwtHelper,
     AuthenticationCookieService,
   ],
+  exports: [JwtHelper],
 })
 export class AuthenticationModule {}
