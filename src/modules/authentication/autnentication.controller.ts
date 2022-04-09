@@ -7,17 +7,19 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { SignInDto } from '../../model/dto/authentication/sign-in.dto';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { AuthenticationService } from './authentication.service';
 import { Request, Response } from 'express';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('authentication')
 @Controller('/authentication')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
   @Post('/sign-in')
   async signIn(
     @Body() body: SignInDto,
@@ -32,26 +34,24 @@ export class AuthenticationController {
     );
   }
 
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
   @Post('/refresh')
   async refresh(@Req() request: Request, @Res() response: Response) {
     return this.authenticationService.refreshToken(request, response);
   }
 
-  @Post('/sign-out')
+  @ApiOkResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('/sign-out')
   async logout(@Req() request: Request, @Res() response: Response) {
     return this.authenticationService.logout(request, response);
   }
 
-  @Get('/status')
+  @ApiOkResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Get('/status')
   async getAuthenticationStatus(@Req() request: Request): Promise<void> {
     return this.authenticationService.validateAuthentication(request);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  test() {
-    return 'test';
   }
 }

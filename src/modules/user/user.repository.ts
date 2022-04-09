@@ -26,10 +26,11 @@ export class UserRepository extends Repository<User> {
   }
 
   async getRefreshTokensFor(userId: number): Promise<string[] | undefined> {
-    return this.createQueryBuilder('users')
+    const result = await this.createQueryBuilder('users')
       .select('users.refresh_tokens', 'refresh_tokens')
       .where('users.id = :userId', { userId })
-      .getRawOne()
-      .then((res) => res?.refresh_tokens);
+      .getRawOne();
+
+    return result?.refresh_tokens;
   }
 }
