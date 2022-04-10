@@ -4,12 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
-import { CreateProductParams, UpdateProductParams } from './product.interface';
+import {
+  CreateProductParams,
+  GetProductParams,
+  UpdateProductParams,
+} from './product.interface';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductImageParams } from './product-image/product-image.interface';
 import { ProductImageService } from './product-image/product-image.service';
 import { CategoryService } from '../category/category.service';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { DataPage } from '../../model/common/data-page';
 
 @Injectable()
 export class ProductService {
@@ -86,5 +91,9 @@ export class ProductService {
     }
 
     await this.productImageService.deleteImagesForProduct(productId);
+  }
+
+  async getProducts(params: GetProductParams): Promise<DataPage<Product>> {
+    return this.productRepository.getProducts(params);
   }
 }

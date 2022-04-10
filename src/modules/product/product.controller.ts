@@ -3,12 +3,14 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -30,6 +32,8 @@ import { CreateProductImageParams } from './product-image/product-image.interfac
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { multerConfig } from '../../config/multer.config';
 import { UpdateProductDto } from '../../model/dto/product/update-product.dto';
+import { GetProductsDto } from '../../model/dto/product/get-products.dto';
+import { DataPageDto } from '../../model/dto/common/data-page.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -123,5 +127,13 @@ export class ProductController {
     @Param('id', ParseIntPipe) productId: number,
   ): Promise<void> {
     return this.productService.deleteProduct(productId);
+  }
+
+  @ApiOkResponse()
+  @Get()
+  async getProducts(
+    @Query() query: GetProductsDto,
+  ): Promise<DataPageDto<Product>> {
+    return this.productService.getProducts(query);
   }
 }

@@ -13,8 +13,8 @@ export class ProductImageRepository extends Repository<ProductImage> {
   }
 
   async deleteImagesByProductId(productId: number): Promise<void> {
-    await this.createQueryBuilder('product_images')
-      .where('product_images.product_id = :productId', { productId })
+    await this.createQueryBuilder('productImages')
+      .where('productImages.productId = :productId', { productId })
       .softDelete()
       .execute();
   }

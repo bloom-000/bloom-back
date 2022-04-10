@@ -1,6 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Product } from '../../model/entity/product.entity';
-import { CreateProductParams, UpdateProductParams } from './product.interface';
+import {
+  CreateProductParams,
+  GetProductParams,
+  UpdateProductParams,
+} from './product.interface';
+import { DataPage } from '../../model/common/data-page';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -40,5 +45,37 @@ export class ProductRepository extends Repository<Product> {
     const result = await this.softDelete({ id: productId });
 
     return !!result.affected;
+  }
+
+  async getProducts(params: GetProductParams): Promise<DataPage<Product>> {
+    const { page, pageSize } = params;
+
+    const [data, total] = await this.createQueryBuilder('products')
+      .select([
+        'products.createdAt',
+        'products.updatedAt',
+        'products.deletedAt',
+        'products.id',
+        'products.name',
+        'products.description',
+        'products.price',
+        'products.oldPrice',
+        'products.stockQuantity',
+        'images.id',
+        'images.createdAt',
+        'images.updatedAt',
+        'images.deletedAt',
+        'images.imagePath',
+        'images.order',
+        'categories',
+      ])
+      .leftJoin('products.images', 'images')
+      .leftJoin('products.category', 'categories')
+      .orderBy('products.createdAt', 'DESC')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    return { data, total };
   }
 }

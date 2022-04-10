@@ -29,7 +29,7 @@ export class CategoryRepository extends Repository<Category> {
     const { page, pageSize } = params;
 
     const [data, total] = await this.createQueryBuilder('categories')
-      .orderBy('categories.created_at', 'DESC')
+      .orderBy('categories.createdAt', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();

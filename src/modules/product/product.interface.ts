@@ -1,3 +1,5 @@
+import { PageOptionParams } from '../../model/common/page-option.params';
+
 export interface CreateProductParams {
   name: string;
   categoryId: number;
@@ -8,3 +10,5 @@ export interface CreateProductParams {
 }
 
 export type UpdateProductParams = Partial<CreateProductParams>;
+
+export type GetProductParams = PageOptionParams;
