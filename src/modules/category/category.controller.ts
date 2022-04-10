@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -28,6 +31,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiCreatedResponse()
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post()
   async createCategory(@Body() body: CreateCategoryDto): Promise<Category> {
     return this.categoryService.createCategory(body);
@@ -48,5 +52,13 @@ export class CategoryController {
     @Body() body: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.updateCategory(categoryId, body);
+  }
+
+  @ApiOkResponse()
+  @Delete('/:id')
+  async deleteCategory(
+    @Param('id', ParseIntPipe) categoryId: number,
+  ): Promise<void> {
+    return this.categoryService.deleteCategory(categoryId);
   }
 }

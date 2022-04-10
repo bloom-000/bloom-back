@@ -59,4 +59,10 @@ export class CategoryRepository extends Repository<Category> {
 
     return count > 0;
   }
+
+  async deleteCategory(categoryId: number): Promise<boolean> {
+    const result = await this.softDelete({ id: categoryId });
+
+    return !!result.affected;
+  }
 }

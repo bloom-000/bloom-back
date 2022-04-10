@@ -53,4 +53,11 @@ export class CategoryService {
       throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
     }
   }
+
+  async deleteCategory(categoryId: number): Promise<void> {
+    const didDelete = await this.categoryRepository.deleteCategory(categoryId);
+    if (!didDelete) {
+      throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
+    }
+  }
 }
