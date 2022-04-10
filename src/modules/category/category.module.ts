@@ -3,13 +3,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryRepository } from './category.repository';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
-import { CookieJwtStrategy } from '../authentication/cookie-jwt.strategy';
-import { AuthenticationCookieService } from '../authentication/authentication-cookie.service';
+import { CookieStrategyModule } from '../authentication/modules/cookie-strategy.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategoryRepository])],
+  imports: [
+    TypeOrmModule.forFeature([CategoryRepository]),
+    CookieStrategyModule,
+  ],
   controllers: [CategoryController],
-  providers: [CategoryService, CookieJwtStrategy, AuthenticationCookieService],
+  providers: [CategoryService],
   exports: [CategoryService],
 })
 export class CategoryModule {}

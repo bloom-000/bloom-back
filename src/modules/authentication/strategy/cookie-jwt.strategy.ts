@@ -1,8 +1,8 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
-import { environment } from '../../environment';
-import { AuthenticationCookieService } from './authentication-cookie.service';
+import { environment } from '../../../environment';
+import { AuthenticationCookieService } from '../authentication-cookie.service';
 
 @Injectable()
 export class CookieJwtStrategy extends PassportStrategy(Strategy) {

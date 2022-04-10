@@ -31,11 +31,13 @@ export class JwtHelper {
     }
     try {
       await this.jwtService.verifyAsync(token, {
-        secret: environment.accessTokenSecret,
+        secret: environment.refreshTokenSecret,
         ignoreExpiration: false,
       });
       return true;
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
 
     return false;
   }
