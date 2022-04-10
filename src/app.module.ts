@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesGuard } from './guard/roles.guard';
 import { UserModule } from './modules/user/user.module';
 import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { CategoryModule } from './modules/category/category.module';
     AuthenticationModule,
     UserModule,
     CategoryModule,
+    ProductModule,
   ],
   providers: [
     {

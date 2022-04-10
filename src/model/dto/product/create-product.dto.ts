@@ -1,0 +1,58 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from '@nestjs/class-validator';
+import { OrderedImageDto } from '../../common/ordered-image.dto';
+import { plainToClass, Transform, Type } from 'class-transformer';
+
+export class CreateProductDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsInt()
+  @Type(() => Number)
+  categoryId: number;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  price: number;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  @Type(() => Number)
+  oldPrice: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  @IsInt()
+  @Type(() => Number)
+  stockQuantity: number;
+
+  @ApiProperty({ isArray: true, type: OrderedImageDto })
+  @IsArray()
+  @Transform((v) => plainToClass(OrderedImageDto, JSON.parse(v.value)))
+  @Type(() => OrderedImageDto)
+  @ValidateNested({ each: true })
+  imageOrder: OrderedImageDto[];
+}

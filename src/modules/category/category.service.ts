@@ -18,7 +18,7 @@ export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   async createCategory(params: CreateCategoryParams): Promise<Category> {
-    if (await this.categoryRepository.categoryWithNameExists(params.name)) {
+    if (await this.categoryRepository.categoryExistsWithName(params.name)) {
       throw new ConflictException(
         ExceptionMessageCode.CATEGORY_NAME_ALREADY_USED,
       );
@@ -46,5 +46,11 @@ export class CategoryService {
     }
 
     return category;
+  }
+
+  async validateCategoryById(categoryId: number): Promise<void> {
+    if (!(await this.categoryRepository.categoryExistsWithId(categoryId))) {
+      throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
+    }
   }
 }

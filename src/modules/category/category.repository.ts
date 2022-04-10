@@ -9,7 +9,7 @@ import { DataPage } from '../../model/common/data-page';
 
 @EntityRepository(Category)
 export class CategoryRepository extends Repository<Category> {
-  async categoryWithNameExists(categoryName: string): Promise<boolean> {
+  async categoryExistsWithName(categoryName: string): Promise<boolean> {
     const count = await this.createQueryBuilder('categories')
       .where('categories.name = :categoryName', { categoryName })
       .getCount();
@@ -50,5 +50,13 @@ export class CategoryRepository extends Repository<Category> {
       ...category,
       ...params,
     });
+  }
+
+  async categoryExistsWithId(categoryId: number): Promise<boolean> {
+    const count = await this.createQueryBuilder('categories')
+      .where('categories.id = :categoryId', { categoryId })
+      .getCount();
+
+    return count > 0;
   }
 }
