@@ -22,4 +22,8 @@ export class ProductImageService {
     await this.productImageRepository.deleteImagesByProductId(productId);
     return this.productImageRepository.createProductImages(params);
   }
+
+  async deleteImagesForProduct(productId: number): Promise<void> {
+    await this.productImageRepository.deleteImagesByProductId(productId);
+  }
 }

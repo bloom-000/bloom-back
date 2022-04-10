@@ -2,6 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -37,6 +40,7 @@ export class ProductController {
 
   @ApiCreatedResponse()
   @ApiConsumes('multipart/form-data')
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   @UseInterceptors(FilesInterceptor('images', undefined, multerConfig))
   async createProduct(
@@ -110,5 +114,14 @@ export class ProductController {
       ...body,
       images,
     });
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('/:id')
+  async deleteProduct(
+    @Param('id', ParseIntPipe) productId: number,
+  ): Promise<void> {
+    return this.productService.deleteProduct(productId);
   }
 }

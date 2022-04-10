@@ -35,4 +35,10 @@ export class ProductRepository extends Repository<Product> {
       ...params,
     });
   }
+
+  async deleteProduct(productId: number): Promise<boolean> {
+    const result = await this.softDelete({ id: productId });
+
+    return !!result.affected;
+  }
 }

@@ -78,4 +78,13 @@ export class ProductService {
 
     return product;
   }
+
+  async deleteProduct(productId: number): Promise<void> {
+    const didDelete = await this.productRepository.deleteProduct(productId);
+    if (!didDelete) {
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_IMAGES_REQUIRED);
+    }
+
+    await this.productImageService.deleteImagesForProduct(productId);
+  }
 }
