@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Product } from '../../model/entity/product.entity';
-import { CreateProductParams } from './product.interface';
+import { CreateProductParams, UpdateProductParams } from './product.interface';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -16,5 +16,23 @@ export class ProductRepository extends Repository<Product> {
       .getCount();
 
     return count > 0;
+  }
+
+  async updateProduct(
+    productId: number,
+    params: UpdateProductParams,
+  ): Promise<Product | undefined> {
+    const product = await this.findOne({
+      where: { id: productId },
+      relations: ['images'],
+    });
+    if (!product) {
+      return undefined;
+    }
+
+    return this.save({
+      ...product,
+      ...params,
+    });
   }
 }

@@ -9,8 +9,8 @@ import {
   Min,
   ValidateNested,
 } from '@nestjs/class-validator';
-import { OrderedImageDto } from '../../common/ordered-image.dto';
-import { plainToClass, Transform, Type } from 'class-transformer';
+import { OrderedImageDto } from '../common/ordered-image.dto';
+import { plainToInstance, Transform, Type } from 'class-transformer';
 
 export class CreateProductDto {
   @ApiProperty()
@@ -51,7 +51,7 @@ export class CreateProductDto {
 
   @ApiProperty({ isArray: true, type: OrderedImageDto })
   @IsArray()
-  @Transform((v) => plainToClass(OrderedImageDto, JSON.parse(v.value)))
+  @Transform((v) => plainToInstance(OrderedImageDto, JSON.parse(v.value)))
   @Type(() => OrderedImageDto)
   @ValidateNested({ each: true })
   imageOrder: OrderedImageDto[];

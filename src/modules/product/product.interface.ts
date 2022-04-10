@@ -5,5 +5,6 @@ export interface CreateProductParams {
   price: number;
   oldPrice?: number;
   stockQuantity: number;
-  imageIds?: number[];
 }
+
+export type UpdateProductParams = Partial<CreateProductParams>;

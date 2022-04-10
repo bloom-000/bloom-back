@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Category } from './category.entity';
 import { ProductImage } from './product-image.entity';
 import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
@@ -29,9 +22,6 @@ export class Product extends AbstractNumberPkEntity {
 
   @Column({ name: 'stock_quantity' })
   stockQuantity: number;
-
-  @RelationId((product: Product) => product.images)
-  imageIds: number[];
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })

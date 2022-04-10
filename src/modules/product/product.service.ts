@@ -1,6 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProductRepository } from './product.repository';
-import { CreateProductParams } from './product.interface';
+import { CreateProductParams, UpdateProductParams } from './product.interface';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductImageParams } from './product-image/product-image.interface';
 import { ProductImageService } from './product-image/product-image.service';
@@ -35,7 +39,42 @@ export class ProductService {
         productId: product.id,
       })),
     );
-    product.imageIds = undefined;
+
+    return product;
+  }
+
+  async updateProduct(
+    productId: number,
+    params: Omit<UpdateProductParams, 'imageIds'> & {
+      images: Omit<CreateProductImageParams, 'productId'>[];
+    },
+  ): Promise<Product> {
+    const { name, categoryId, images } = params;
+
+    delete params.images;
+
+    if (categoryId) await this.categoryService.validateCategoryById(categoryId);
+
+    if (name && (await this.productRepository.productExistsWithName(name))) {
+      throw new ConflictException(
+        ExceptionMessageCode.PRODUCT_NAME_ALREADY_USED,
+      );
+    }
+
+    const product = await this.productRepository.updateProduct(
+      productId,
+      params,
+    );
+    if (!product) {
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
+    }
+
+    if (images) {
+      product.images = await this.productImageService.updateImagesForProduct(
+        productId,
+        images.map((e) => ({ ...e, productId })),
+      );
+    }
 
     return product;
   }

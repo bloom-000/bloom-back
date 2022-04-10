@@ -14,4 +14,12 @@ export class ProductImageService {
   ): Promise<ProductImage[]> {
     return this.productImageRepository.createProductImages(params);
   }
+
+  async updateImagesForProduct(
+    productId: number,
+    params: CreateProductImageParams[],
+  ) {
+    await this.productImageRepository.deleteImagesByProductId(productId);
+    return this.productImageRepository.createProductImages(params);
+  }
 }
