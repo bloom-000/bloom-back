@@ -29,7 +29,15 @@ export class CategoryRepository extends Repository<Category> {
     const { page, pageSize } = params;
 
     const [data, total] = await this.createQueryBuilder('categories')
+      .leftJoin('categories.products', 'products')
+      .loadRelationCountAndMap(
+        'categories.productCount',
+        'categories.products',
+        'productsCount',
+      )
       .orderBy('categories.createdAt', 'DESC')
+      .groupBy('categories.id')
+      .addGroupBy('products.id')
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();
