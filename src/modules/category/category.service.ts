@@ -60,4 +60,13 @@ export class CategoryService {
       throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
     }
   }
+
+  async getCategory(id: number) {
+    const category = await this.categoryRepository.getCategoryById(id);
+    if (!category) {
+      throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
+    }
+
+    return category;
+  }
 }

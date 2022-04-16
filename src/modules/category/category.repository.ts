@@ -73,4 +73,10 @@ export class CategoryRepository extends Repository<Category> {
 
     return !!result.affected;
   }
+
+  async getCategoryById(id: number): Promise<Category | undefined> {
+    return this.createQueryBuilder('categories')
+      .where('categories.id = :id', { id })
+      .getOne();
+  }
 }

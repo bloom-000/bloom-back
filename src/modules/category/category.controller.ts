@@ -46,6 +46,12 @@ export class CategoryController {
   }
 
   @ApiOkResponse()
+  @Get('/:id')
+  async getCategory(@Param('id', ParseIntPipe) id: number): Promise<Category> {
+    return this.categoryService.getCategory(id);
+  }
+
+  @ApiOkResponse()
   @Patch('/:id')
   async updateCategory(
     @Param('id', ParseIntPipe) categoryId: number,
