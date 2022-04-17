@@ -34,6 +34,7 @@ import { multerConfig } from '../../config/multer.config';
 import { UpdateProductDto } from '../../model/dto/product/update-product.dto';
 import { GetProductsDto } from '../../model/dto/product/get-products.dto';
 import { DataPageDto } from '../../model/dto/common/data-page.dto';
+import { ApiFilesFormData } from '../../decorator/api-file.decorator';
 
 @ApiTags('products')
 @Controller('products')
@@ -43,10 +44,8 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @ApiCreatedResponse()
-  @ApiConsumes('multipart/form-data')
-  @HttpCode(HttpStatus.CREATED)
   @Post()
-  @UseInterceptors(FilesInterceptor('images', undefined, multerConfig))
+  @ApiFilesFormData('images')
   async createProduct(
     @Body() body: CreateProductDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -82,6 +81,7 @@ export class ProductController {
 
   @ApiOkResponse()
   @ApiConsumes('multipart/form-data')
+  @HttpCode(HttpStatus.OK)
   @Patch('/:id')
   @UseInterceptors(FilesInterceptor('images', undefined, multerConfig))
   async updateProduct(

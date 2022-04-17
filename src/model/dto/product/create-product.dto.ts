@@ -11,6 +11,7 @@ import {
 } from '@nestjs/class-validator';
 import { OrderedImageDto } from '../common/ordered-image.dto';
 import { plainToInstance, Transform, Type } from 'class-transformer';
+import { ApiFilesProperty } from '../../../decorator/api-file.decorator';
 
 export class CreateProductDto {
   @ApiProperty()
@@ -55,4 +56,9 @@ export class CreateProductDto {
   @Type(() => OrderedImageDto)
   @ValidateNested({ each: true })
   imageOrder: OrderedImageDto[];
+
+  @ApiProperty({ name: 'images' })
+  @IsArray()
+  @ApiFilesProperty({ required: true })
+  images: Express.Multer.File[];
 }
