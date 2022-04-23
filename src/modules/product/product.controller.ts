@@ -46,19 +46,10 @@ export class ProductController {
   @ApiCreatedResponse()
   @Post()
   @ApiFilesFormData('images')
-  async createProduct(
-    @Body() body: CreateProductDto,
-    @UploadedFiles() files: Array<Express.Multer.File>,
-  ): Promise<Product> {
-    if (!files) {
-      throw new BadRequestException(
-        ExceptionMessageCode.PRODUCT_IMAGES_REQUIRED,
-      );
-    }
-
+  async createProduct(@Body() body: CreateProductDto): Promise<Product> {
     const images: Omit<CreateProductImageParams, 'productId'>[] =
       body.imageOrder.map((e) => {
-        const imageFile = files?.find(
+        const imageFile = body.images?.find(
           (file) => file.originalname === e.imageFilename,
         );
         if (!imageFile) {
@@ -135,5 +126,11 @@ export class ProductController {
     @Query() query: GetProductsDto,
   ): Promise<DataPageDto<Product>> {
     return this.productService.getProducts(query);
+  }
+
+  @ApiOkResponse()
+  @Get('/:id')
+  async getProduct(@Param('id', ParseIntPipe) id: number): Promise<Product> {
+    return this.productService.getProductById(id);
   }
 }

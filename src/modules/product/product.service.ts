@@ -15,6 +15,7 @@ import { ProductImageService } from './product-image/product-image.service';
 import { CategoryService } from '../category/category.service';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { DataPage } from '../../model/common/data-page';
+import { basename } from 'path';
 
 @Injectable()
 export class ProductService {
@@ -41,6 +42,7 @@ export class ProductService {
     product.images = await this.productImageService.createProductImages(
       params.images.map((e) => ({
         ...e,
+        imagePath: basename(e.imagePath),
         productId: product.id,
       })),
     );
@@ -87,7 +89,7 @@ export class ProductService {
   async deleteProduct(productId: number): Promise<void> {
     const didDelete = await this.productRepository.deleteProduct(productId);
     if (!didDelete) {
-      throw new NotFoundException(ExceptionMessageCode.PRODUCT_IMAGES_REQUIRED);
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
     }
 
     await this.productImageService.deleteImagesForProduct(productId);
@@ -95,5 +97,14 @@ export class ProductService {
 
   async getProducts(params: GetProductParams): Promise<DataPage<Product>> {
     return this.productRepository.getProducts(params);
+  }
+
+  async getProductById(productId: number): Promise<Product> {
+    const product = await this.productRepository.getById(productId);
+    if (!product) {
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
+    }
+
+    return product;
   }
 }

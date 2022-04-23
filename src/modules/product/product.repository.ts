@@ -78,4 +78,11 @@ export class ProductRepository extends Repository<Product> {
 
     return { data, total };
   }
+
+  async getById(productId: number): Promise<Product | undefined> {
+    return this.createQueryBuilder('products')
+      .leftJoinAndSelect('products.category', 'category')
+      .where('products.id = :productId', { productId })
+      .getOne();
+  }
 }
