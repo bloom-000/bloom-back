@@ -56,17 +56,11 @@ export class ProductService {
       images: Omit<CreateProductImageParams, 'productId'>[];
     },
   ): Promise<Product> {
-    const { name, categoryId, images } = params;
+    const { categoryId, images } = params;
 
     delete params.images;
 
     if (categoryId) await this.categoryService.validateCategoryById(categoryId);
-
-    if (name && (await this.productRepository.productExistsWithName(name))) {
-      throw new ConflictException(
-        ExceptionMessageCode.PRODUCT_NAME_ALREADY_USED,
-      );
-    }
 
     const product = await this.productRepository.updateProduct(
       productId,
@@ -76,10 +70,17 @@ export class ProductService {
       throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
     }
 
+    await this.productImageService.deleteImagesForProduct(
+      productId,
+      params.keepImageIds,
+    );
     if (images) {
-      product.images = await this.productImageService.updateImagesForProduct(
-        productId,
-        images.map((e) => ({ ...e, productId })),
+      product.images = await this.productImageService.createProductImages(
+        images.map((e) => ({
+          ...e,
+          productId,
+          imagePath: basename(e.imagePath),
+        })),
       );
     }
 

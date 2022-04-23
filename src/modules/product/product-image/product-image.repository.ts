@@ -12,7 +12,17 @@ export class ProductImageRepository extends Repository<ProductImage> {
     return this.save(entity);
   }
 
-  async deleteImagesByProductId(productId: number): Promise<void> {
-    await this.softDelete({ productId: productId });
+  async deleteImagesByProductId(
+    productId: number,
+    keepImageIds?: number[],
+  ): Promise<void> {
+    const query = await this.createQueryBuilder().where(
+      'productId = :productId',
+      { productId },
+    );
+    if (keepImageIds) {
+      query.andWhere('id NOT IN (:...keepImageIds)', { keepImageIds });
+    }
+    await query.softDelete().execute();
   }
 }

@@ -15,7 +15,7 @@ export const generateFileName = (req, file, callback) => {
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
 
   const fileExtName = extname(file.originalname);
-  const fileName = `${uniqueSuffix}${fileExtName}`;
+  const fileName = `${uniqueSuffix}${fileExtName || '.jpg'}`;
 
   callback(null, fileName);
 };

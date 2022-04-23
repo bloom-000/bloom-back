@@ -82,6 +82,7 @@ export class ProductRepository extends Repository<Product> {
   async getById(productId: number): Promise<Product | undefined> {
     return this.createQueryBuilder('products')
       .leftJoinAndSelect('products.category', 'category')
+      .leftJoinAndSelect('products.images', 'images')
       .where('products.id = :productId', { productId })
       .getOne();
   }

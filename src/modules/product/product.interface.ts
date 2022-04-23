@@ -9,6 +9,8 @@ export interface CreateProductParams {
   stockQuantity: number;
 }
 
-export type UpdateProductParams = Partial<CreateProductParams>;
+export type UpdateProductParams = Partial<CreateProductParams> & {
+  keepImageIds?: number[];
+};
 
 export type GetProductParams = PageOptionParams;

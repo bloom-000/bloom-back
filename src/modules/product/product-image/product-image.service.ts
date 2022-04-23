@@ -15,15 +15,13 @@ export class ProductImageService {
     return this.productImageRepository.createProductImages(params);
   }
 
-  async updateImagesForProduct(
+  async deleteImagesForProduct(
     productId: number,
-    params: CreateProductImageParams[],
-  ) {
-    await this.productImageRepository.deleteImagesByProductId(productId);
-    return this.productImageRepository.createProductImages(params);
-  }
-
-  async deleteImagesForProduct(productId: number): Promise<void> {
-    await this.productImageRepository.deleteImagesByProductId(productId);
+    keepImageIds?: number[],
+  ): Promise<void> {
+    await this.productImageRepository.deleteImagesByProductId(
+      productId,
+      keepImageIds,
+    );
   }
 }

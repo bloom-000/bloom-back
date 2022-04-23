@@ -4,7 +4,7 @@ import { Product } from './product.entity';
 
 @Entity({ name: 'categories' })
 export class Category extends AbstractNumberPkEntity {
-  @Column({ name: 'name', unique: true })
+  @Column({ name: 'name' })
   name: string;
 
   @Column({ name: 'description', type: 'text', nullable: true })
