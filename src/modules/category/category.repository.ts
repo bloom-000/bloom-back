@@ -79,4 +79,8 @@ export class CategoryRepository extends Repository<Category> {
       .where('categories.id = :id', { id })
       .getOne();
   }
+
+  async getAllCategories() {
+    return this.find();
+  }
 }

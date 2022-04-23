@@ -69,4 +69,8 @@ export class CategoryService {
 
     return category;
   }
+
+  async getAllCategories(): Promise<Category[]> {
+    return this.categoryRepository.getAllCategories();
+  }
 }

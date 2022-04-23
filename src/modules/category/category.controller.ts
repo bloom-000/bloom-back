@@ -46,6 +46,12 @@ export class CategoryController {
   }
 
   @ApiOkResponse()
+  @Get('/all')
+  async getAllCategories(): Promise<Category[]> {
+    return this.categoryService.getAllCategories();
+  }
+
+  @ApiOkResponse()
   @Get('/:id')
   async getCategory(@Param('id', ParseIntPipe) id: number): Promise<Category> {
     return this.categoryService.getCategory(id);
