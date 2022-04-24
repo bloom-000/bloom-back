@@ -4,12 +4,16 @@ import {
   createParamDecorator,
   ExecutionContext,
   Injectable,
+  Module,
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtHelper } from '../modules/authentication/helper/jwt.helper';
 import { UserPayload } from '../model/common/user.payload';
 import { ExceptionMessageCode } from '../exception/exception-message-codes.enum';
+import { AuthenticationCookieService } from '../modules/authentication/authentication-cookie.service';
+import { JwtModule } from '@nestjs/jwt';
+import { environment } from '../environment';
 
 export const CurrentUserPayload = createParamDecorator(
   (data: never, context: ExecutionContext) => {
@@ -31,16 +35,23 @@ export interface UserPayloadRequest extends Request {
 
 @Injectable()
 export class CurrentUserPayloadInterceptor implements NestInterceptor {
-  constructor(private readonly jwtHelper: JwtHelper) {}
+  constructor(
+    private readonly jwtHelper: JwtHelper,
+    private readonly authenticationCookieService: AuthenticationCookieService,
+  ) {}
 
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const request = context.switchToHttp().getRequest<UserPayloadRequest>();
+    const request = context.switchToHttp().getRequest();
     const authorizationHeader =
       request.headers['authorization'] || request.headers['Authorization'];
-    const jwtToken = authorizationHeader.slice('Bearer '.length);
+
+    let jwtToken = authorizationHeader?.slice('Bearer '.length);
+    if (!jwtToken) {
+      jwtToken = this.authenticationCookieService.getAccessToken(request);
+    }
 
     if (jwtToken) {
       request.userPayload = await this.jwtHelper.getUserPayload(jwtToken);
@@ -49,3 +60,15 @@ export class CurrentUserPayloadInterceptor implements NestInterceptor {
     return next.handle();
   }
 }
+
+@Module({
+  imports: [
+    JwtModule.register({
+      secret: environment.accessTokenSecret,
+      signOptions: { expiresIn: environment.accessTokenExpiration },
+    }),
+  ],
+  providers: [AuthenticationCookieService, JwtHelper],
+  exports: [JwtHelper, AuthenticationCookieService],
+})
+export class CurrentUserPayloadInterceptorModule {}

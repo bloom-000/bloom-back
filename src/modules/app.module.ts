@@ -11,6 +11,7 @@ import { join } from 'path';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
     ProductModule,
     RoleModule,
     PermissionModule,
+    ShippingAddressModule,
   ],
   providers: [
     {
