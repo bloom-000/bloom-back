@@ -7,6 +7,8 @@ export class Permission extends AbstractNumberPkEntity {
   @Column({ name: 'permission' })
   permission: string;
 
-  @ManyToMany(() => Role, (role) => role.permissions)
+  @ManyToMany(() => Role, (role) => role.permissions, {
+    onDelete: 'CASCADE',
+  })
   role: Role;
 }

@@ -21,4 +21,10 @@ export class PermissionRepository extends Repository<Permission> {
   async getAllPermissions(): Promise<Permission[]> {
     return this.find();
   }
+
+  async deleteById(id: number): Promise<boolean> {
+    const result = await this.delete({ id });
+
+    return !!result.affected;
+  }
 }

@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePermissionParams } from './permission.interface';
 import { Permission } from '../../model/entity/permission.entity';
 import { PermissionRepository } from './permission.repository';
@@ -22,5 +26,12 @@ export class PermissionService {
 
   async getAllPermissions(): Promise<Permission[]> {
     return this.permissionRepository.getAllPermissions();
+  }
+
+  async deletePermissionById(permissionId: number): Promise<void> {
+    const didDelete = await this.permissionRepository.deleteById(permissionId);
+    if (!didDelete) {
+      throw new NotFoundException(ExceptionMessageCode.PERMISSION_NOT_FOUND);
+    }
   }
 }

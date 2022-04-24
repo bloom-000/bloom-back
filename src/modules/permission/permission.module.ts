@@ -4,6 +4,7 @@ import { PermissionRepository } from './permission.repository';
 import { PermissionService } from './permission.service';
 import { PermissionController } from './permission.controller';
 import { CookieStrategyModule } from '../authentication/modules/cookie-strategy.module';
+import { PermissionSynchronizerService } from './permission-synchronizer.service';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { CookieStrategyModule } from '../authentication/modules/cookie-strategy.
     CookieStrategyModule,
   ],
   controllers: [PermissionController],
-  providers: [PermissionService],
+  providers: [PermissionService, PermissionSynchronizerService],
   exports: [PermissionService],
 })
 export class PermissionModule {}
