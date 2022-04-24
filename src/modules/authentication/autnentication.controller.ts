@@ -12,9 +12,11 @@ import { SignInDto } from '../../model/dto/authentication/sign-in.dto';
 import { AuthenticationService } from './authentication.service';
 import { Request, Response } from 'express';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { NoAuth } from '../../decorator/no-auth.decorator';
 
 @ApiTags('authentication')
 @Controller('/authentication')
+@NoAuth()
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 

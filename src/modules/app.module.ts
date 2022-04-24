@@ -10,6 +10,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -36,6 +37,10 @@ import { PermissionModule } from './permission/permission.module';
     {
       provide: APP_GUARD,
       useClass: PermissionGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

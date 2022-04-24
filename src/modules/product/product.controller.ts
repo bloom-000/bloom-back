@@ -12,7 +12,6 @@ import {
   Post,
   Query,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -22,7 +21,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { Permissions } from '../../decorator/roles.decorator';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductDto } from '../../model/dto/product/create-product.dto';
@@ -38,7 +36,6 @@ import { ActionProduct } from '../../common/actions/product.action';
 
 @ApiTags('products')
 @Controller('products')
-@UseGuards(JwtAuthGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
