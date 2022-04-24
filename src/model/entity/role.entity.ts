@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, RelationId } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
 import { Permission } from './permission.entity';
 import { User } from './user.entity';
@@ -10,9 +10,6 @@ export class Role extends AbstractNumberPkEntity {
 
   @Column({ name: 'description', type: 'text' })
   description: string;
-
-  @RelationId((role: Role) => role.permissions)
-  permissionIds: number[];
 
   @JoinTable({
     name: 'role_permissions',

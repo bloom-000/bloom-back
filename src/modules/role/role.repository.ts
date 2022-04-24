@@ -8,7 +8,14 @@ export class RoleRepository extends Repository<Role> {
   async createRole(params: CreateRoleParams): Promise<Role> {
     const entity = this.create(params);
 
-    return this.save(entity);
+    const role = await this.save(entity);
+
+    await this.createQueryBuilder()
+      .relation(Role, 'permissions')
+      .of(role)
+      .add(params.permissionIds);
+
+    return role;
   }
 
   async existsWithName(name: string): Promise<boolean> {
