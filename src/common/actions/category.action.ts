@@ -1,1 +1,8 @@
-export enum ActionCategory {}
+export enum ActionCategory {
+  CREATE = 'CATEGORY__CREATE',
+  READ_FILTER = 'CATEGORY__READ_FILTER',
+  READ_ALL = 'CATEGORY__READ_ALL',
+  READ_BY_ID = 'CATEGORY__READ_BY_ID',
+  UPDATE = 'CATEGORY__UPDATE',
+  DELETE = 'CATEGORY__DELETE',
+}

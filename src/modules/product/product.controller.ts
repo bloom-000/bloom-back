@@ -11,23 +11,14 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFiles,
-  UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiConsumes,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { Permissions } from '../../decorator/roles.decorator';
+import { Permissions } from '../../decorator/permissions.decorator';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductDto } from '../../model/dto/product/create-product.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductImageParams } from './product-image/product-image.interface';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
-import { multerConfig } from '../../config/multer.config';
 import { UpdateProductDto } from '../../model/dto/product/update-product.dto';
 import { GetProductsDto } from '../../model/dto/product/get-products.dto';
 import { DataPageDto } from '../../model/dto/common/data-page.dto';
@@ -42,6 +33,7 @@ export class ProductController {
   @ApiCreatedResponse()
   @Post()
   @ApiFilesFormData('images')
+  @Permissions(ActionProduct.CREATE)
   async createProduct(@Body() body: CreateProductDto): Promise<Product> {
     const images: Omit<CreateProductImageParams, 'productId'>[] =
       body.imageOrder.map((e) => {
@@ -67,24 +59,17 @@ export class ProductController {
   }
 
   @ApiOkResponse()
-  @ApiConsumes('multipart/form-data')
   @HttpCode(HttpStatus.OK)
+  @ApiFilesFormData('images')
   @Patch('/:id')
-  @UseInterceptors(FilesInterceptor('images', undefined, multerConfig))
+  @Permissions(ActionProduct.UPDATE)
   async updateProduct(
     @Param('id', ParseIntPipe) productId: number,
     @Body() body: UpdateProductDto,
-    @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<Product> {
-    if (!files) {
-      throw new BadRequestException(
-        ExceptionMessageCode.PRODUCT_IMAGES_REQUIRED,
-      );
-    }
-
     const images: Omit<CreateProductImageParams, 'productId'>[] =
       body.imageOrder?.map((e) => {
-        const imageFile = files?.find(
+        const imageFile = body.images?.find(
           (file) => file.originalname === e.imageFilename,
         );
         if (!imageFile) {
@@ -110,6 +95,7 @@ export class ProductController {
   @ApiOkResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
+  @Permissions(ActionProduct.DELETE)
   async deleteProduct(
     @Param('id', ParseIntPipe) productId: number,
   ): Promise<void> {
@@ -118,7 +104,7 @@ export class ProductController {
 
   @ApiOkResponse()
   @Get()
-  @Permissions(ActionProduct.READ_ALL)
+  @Permissions(ActionProduct.READ_FILTER)
   async getProducts(
     @Query() query: GetProductsDto,
   ): Promise<DataPageDto<Product>> {
@@ -127,6 +113,7 @@ export class ProductController {
 
   @ApiOkResponse()
   @Get('/:id')
+  @Permissions(ActionProduct.READ_BY_ID)
   async getProduct(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productService.getProductById(id);
   }

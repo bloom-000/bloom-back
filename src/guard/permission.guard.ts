@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { KEY_PERMISSIONS } from '../decorator/roles.decorator';
+import { KEY_PERMISSIONS } from '../decorator/permissions.decorator';
 import { UserService } from '../modules/user/user.service';
 import { JwtHelper } from '../modules/authentication/helper/jwt.helper';
 import { AuthenticationCookieService } from '../modules/authentication/authentication-cookie.service';
