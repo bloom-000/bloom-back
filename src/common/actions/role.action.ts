@@ -1,4 +1,6 @@
 export enum ActionRole {
   CREATE = 'ROLE__CREATE',
   READ_FILTER = 'ROLE__READ_FILTER',
+  READ_BY_ID = 'ROLE__READ_BY_ID',
+  UPDATE = 'ROLE__UPDATE',
 }

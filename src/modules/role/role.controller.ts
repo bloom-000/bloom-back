@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { RoleService } from './role.service';
 import { Role } from '../../model/entity/role.entity';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -7,6 +15,7 @@ import { PageOptionsDto } from '../../model/dto/common/page-options.dto';
 import { DataPageDto } from '../../model/dto/common/data-page.dto';
 import { ActionRole } from '../../common/actions/role.action';
 import { Permissions } from '../../decorator/permissions.decorator';
+import { UpdateRoleDto } from '../../model/dto/role/update-role.dto';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -25,5 +34,22 @@ export class RoleController {
   @Permissions(ActionRole.READ_FILTER)
   async getRoles(@Query() params: PageOptionsDto): Promise<DataPageDto<Role>> {
     return this.roleService.getRoles(params);
+  }
+
+  @ApiOkResponse()
+  @Get('/:id')
+  @Permissions(ActionRole.READ_BY_ID)
+  async getRole(@Param('id') roleId: number): Promise<Role> {
+    return this.roleService.getRoleById(roleId);
+  }
+
+  @ApiOkResponse()
+  @Patch('/:id')
+  @Permissions(ActionRole.UPDATE)
+  async updateRole(
+    @Param('id') roleId: number,
+    @Body() body: UpdateRoleDto,
+  ): Promise<Role> {
+    return this.roleService.updateRole(roleId, body);
   }
 }

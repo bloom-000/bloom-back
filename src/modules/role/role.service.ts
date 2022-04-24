@@ -1,6 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RoleRepository } from './role.repository';
-import { CreateRoleParams, GetRolesParams } from './role.interface';
+import {
+  CreateRoleParams,
+  GetRolesParams,
+  UpdateRoleParams,
+} from './role.interface';
 import { Role } from '../../model/entity/role.entity';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { DataPage } from '../../model/common/data-page';
@@ -19,5 +27,23 @@ export class RoleService {
 
   async getRoles(params: GetRolesParams): Promise<DataPage<Role>> {
     return this.roleRepository.getRoles(params);
+  }
+
+  async getRoleById(roleId: number): Promise<Role> {
+    const role = await this.roleRepository.getById(roleId);
+    if (!role) {
+      throw new NotFoundException(ExceptionMessageCode.ROLE_NOT_FOUND);
+    }
+
+    return role;
+  }
+
+  async updateRole(roleId: number, params: UpdateRoleParams): Promise<Role> {
+    const role = await this.roleRepository.updateRole(roleId, params);
+    if (!role) {
+      throw new NotFoundException(ExceptionMessageCode.ROLE_NOT_FOUND);
+    }
+
+    return role;
   }
 }
