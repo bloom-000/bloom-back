@@ -1,13 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../model/common/role.enum';
-import { ROLES_KEY } from '../decorator/roles.decorator';
+import { KEY_PERMISSIONS } from '../decorator/roles.decorator';
 import { UserService } from '../modules/user/user.service';
 import { JwtHelper } from '../modules/authentication/helper/jwt.helper';
 import { AuthenticationCookieService } from '../modules/authentication/authentication-cookie.service';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
@@ -16,11 +15,11 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (!requiredRoles) {
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      KEY_PERMISSIONS,
+      [context.getHandler(), context.getClass()],
+    );
+    if (!requiredPermissions?.length) {
       return true;
     }
 
@@ -41,7 +40,12 @@ export class RolesGuard implements CanActivate {
       return false;
     }
 
-    const userRoles = await this.userService.getRolesForUser(userId);
-    return requiredRoles.some((role) => userRoles?.includes(role));
+    const userPermissions = (
+      await this.userService.getUserPermissions(userId)
+    ).map((e) => e.permission);
+
+    return requiredPermissions.every((permission) =>
+      userPermissions?.includes(permission),
+    );
   }
 }

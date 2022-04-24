@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../../model/entity/user.entity';
-import { Role } from '../../model/common/role.enum';
+import { Role } from '../../model/entity/role.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -37,9 +37,11 @@ export class UserRepository extends Repository<User> {
 
   async getRolesForUser(userId: number): Promise<Role[] | undefined> {
     const result = await this.createQueryBuilder('users')
-      .select('users.roles', 'roles')
+      .select('users.id')
+      .leftJoinAndSelect('users.roles', 'roles')
+      .leftJoinAndSelect('roles.permissions', 'permissions')
       .where('users.id = :userId', { userId })
-      .getRawOne();
+      .getOne();
 
     return result?.roles;
   }

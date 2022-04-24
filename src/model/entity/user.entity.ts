@@ -1,6 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, RelationId } from 'typeorm';
 import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
-import { Role } from '../common/role.enum';
+import { Role } from './role.entity';
 
 @Entity({ name: 'users' })
 export class User extends AbstractNumberPkEntity {
@@ -13,6 +13,20 @@ export class User extends AbstractNumberPkEntity {
   @Column({ name: 'refresh_tokens', array: true, type: 'varchar' })
   refreshTokens: string[];
 
-  @Column({ name: 'roles', array: true, type: 'enum', enum: Role })
+  @RelationId((user: User) => user.roles)
+  roleIds: number[];
+
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  @ManyToMany(() => Role, (role) => role.users)
   roles: Role[];
 }

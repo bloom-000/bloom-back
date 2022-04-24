@@ -23,8 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { Role } from '../../model/common/role.enum';
-import { Roles } from '../../decorator/roles.decorator';
+import { Permissions } from '../../decorator/roles.decorator';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductDto } from '../../model/dto/product/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -35,11 +34,11 @@ import { UpdateProductDto } from '../../model/dto/product/update-product.dto';
 import { GetProductsDto } from '../../model/dto/product/get-products.dto';
 import { DataPageDto } from '../../model/dto/common/data-page.dto';
 import { ApiFilesFormData } from '../../decorator/api-file.decorator';
+import { ActionProduct } from '../../common/actions/product.action';
 
 @ApiTags('products')
 @Controller('products')
 @UseGuards(JwtAuthGuard)
-@Roles(Role.ADMIN)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -122,6 +121,7 @@ export class ProductController {
 
   @ApiOkResponse()
   @Get()
+  @Permissions(ActionProduct.READ_ALL)
   async getProducts(
     @Query() query: GetProductsDto,
   ): Promise<DataPageDto<Product>> {
