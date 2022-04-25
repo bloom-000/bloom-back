@@ -3,6 +3,8 @@ import { UserRepository } from './user.repository';
 import { User } from '../../model/entity/user.entity';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { Permission } from '../../model/entity/permission.entity';
+import { GetUsersParams } from './user.interface';
+import { DataPage } from '../../model/common/data-page';
 
 @Injectable()
 export class UserService {
@@ -39,5 +41,9 @@ export class UserService {
     }
 
     return [].concat(...roles.map((e) => e.permissions));
+  }
+
+  async getUsers(params: GetUsersParams): Promise<DataPage<User>> {
+    return this.userRepository.getUsers(params);
   }
 }

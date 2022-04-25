@@ -1,6 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../../model/entity/user.entity';
 import { Role } from '../../model/entity/role.entity';
+import { DataPage } from '../../model/common/data-page';
+import { GetUsersParams } from './user.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -44,5 +46,15 @@ export class UserRepository extends Repository<User> {
       .getOne();
 
     return result?.roles;
+  }
+
+  async getUsers(params: GetUsersParams): Promise<DataPage<User>> {
+    const { page, pageSize } = params;
+
+    const [data, total] = await this.createQueryBuilder('users')
+      .skip((page - 1) * pageSize)
+      .getManyAndCount();
+
+    return { data, total };
   }
 }
