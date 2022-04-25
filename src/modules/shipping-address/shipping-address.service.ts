@@ -77,4 +77,20 @@ export class ShippingAddressService {
 
     await this.shippingAddressRepository.deleteById(shippingAddressId);
   }
+
+  async getDefaultShippingAddress(userId: number): Promise<ShippingAddress> {
+    const defaultShippingAddress =
+      await this.shippingAddressRepository.getDefaultByUserId(userId);
+    if (!defaultShippingAddress) {
+      throw new NotFoundException(
+        ExceptionMessageCode.DEFAULT_SHIPPING_ADDRESS_NOT_FOUND,
+      );
+    }
+
+    return defaultShippingAddress;
+  }
+
+  async getShippingAddresses(userId: number): Promise<ShippingAddress[]> {
+    return this.shippingAddressRepository.getAllByUserId(userId);
+  }
 }

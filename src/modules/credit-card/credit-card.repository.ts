@@ -27,10 +27,10 @@ export class CreditCardRepository extends Repository<CreditCard> {
 
     return this.save({
       id: creditCardId,
-      number: params.number || creditCard.number,
-      holderName: params.holderName || creditCard.holderName,
-      cvv: params.cvv || creditCard.cvv,
-      expiryDate: params.expiryDate || creditCard.expiryDate,
+      number: params.number ?? creditCard.number,
+      holderName: params.holderName ?? creditCard.holderName,
+      cvv: params.cvv ?? creditCard.cvv,
+      expiryDate: params.expiryDate ?? creditCard.expiryDate,
     });
   }
 

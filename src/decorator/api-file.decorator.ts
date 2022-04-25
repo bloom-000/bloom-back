@@ -37,7 +37,7 @@ export const ApiFilesProperty =
   (params: { required?: boolean }): PropertyDecorator =>
   (target: unknown, propertyKey: string | symbol) => {
     ApiProperty({
-      required: params.required || true,
+      required: params.required ?? true,
       type: 'array',
       name: propertyKey.toString(),
       items: {

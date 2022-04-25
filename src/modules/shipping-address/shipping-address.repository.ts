@@ -28,13 +28,13 @@ export class ShippingAddressRepository extends Repository<ShippingAddress> {
   ): Promise<ShippingAddress | undefined> {
     return this.save({
       id: shippingAddress.id,
-      fullName: params.fullName || shippingAddress.fullName,
-      phoneNumber: params.phoneNumber || shippingAddress.phoneNumber,
-      country: params.country || shippingAddress.country,
-      city: params.city || shippingAddress.city,
-      streetAddress: params.streetAddress || shippingAddress.streetAddress,
-      postalCode: params.postalCode || shippingAddress.postalCode,
-      isDefault: params.isDefault || shippingAddress.isDefault,
+      fullName: params.fullName ?? shippingAddress.fullName,
+      phoneNumber: params.phoneNumber ?? shippingAddress.phoneNumber,
+      country: params.country ?? shippingAddress.country,
+      city: params.city ?? shippingAddress.city,
+      streetAddress: params.streetAddress ?? shippingAddress.streetAddress,
+      postalCode: params.postalCode ?? shippingAddress.postalCode,
+      isDefault: params.isDefault ?? shippingAddress.isDefault,
     });
   }
 
@@ -57,5 +57,20 @@ export class ShippingAddressRepository extends Repository<ShippingAddress> {
       .getRawOne();
 
     return result?.userId;
+  }
+
+  async getDefaultByUserId(
+    userId: number,
+  ): Promise<ShippingAddress | undefined> {
+    return this.createQueryBuilder('shippingAddresses')
+      .where('shippingAddresses.userId = :userId', { userId })
+      .andWhere('shippingAddresses.isDefault = true')
+      .getOne();
+  }
+
+  async getAllByUserId(userId: number): Promise<ShippingAddress[]> {
+    return this.createQueryBuilder('shippingAddresses')
+      .where('shippingAddresses.userId = :userId', { userId })
+      .getMany();
   }
 }

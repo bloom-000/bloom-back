@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -64,6 +65,28 @@ export class ShippingAddressController {
     return this.shippingAddressService.deleteShippingAddress(
       currentUserPayload.userId,
       shippingAddressId,
+    );
+  }
+
+  @ApiOkResponse()
+  @Get('/default')
+  @UseInterceptors(CurrentUserPayloadInterceptor)
+  async getDefaultShippingAddress(
+    @CurrentUserPayload() currentUserPayload: UserPayload,
+  ): Promise<ShippingAddress> {
+    return this.shippingAddressService.getDefaultShippingAddress(
+      currentUserPayload.userId,
+    );
+  }
+
+  @ApiOkResponse()
+  @Get()
+  @UseInterceptors(CurrentUserPayloadInterceptor)
+  async getShippingAddresses(
+    @CurrentUserPayload() currentUserPayload: UserPayload,
+  ): Promise<ShippingAddress[]> {
+    return this.shippingAddressService.getShippingAddresses(
+      currentUserPayload.userId,
     );
   }
 }

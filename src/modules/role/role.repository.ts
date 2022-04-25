@@ -66,8 +66,8 @@ export class RoleRepository extends Repository<Role> {
 
     return this.save({
       id: roleId,
-      name: params.name || role.name,
-      description: params.description || role.description,
+      name: params.name ?? role.name,
+      description: params.description ?? role.description,
     });
   }
 
