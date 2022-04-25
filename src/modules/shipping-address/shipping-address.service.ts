@@ -71,7 +71,7 @@ export class ShippingAddressService {
 
     if (currentUserId !== shippingAddressUserId) {
       throw new ForbiddenException(
-        ExceptionMessageCode.CANT_EDIT_OTHERS_SHIPPING_ADDRESS,
+        ExceptionMessageCode.CANT_DELETE_OTHERS_SHIPPING_ADDRESS,
       );
     }
 
