@@ -1,13 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { CreateOrderParams } from './order.interface';
 import { Order } from '../../model/entity/order.entity';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { OrderProductService } from './order-product/order-product.service';
 import { ShippingAddressService } from '../shipping-address/shipping-address.service';
 import { CreditCardService } from '../credit-card/credit-card.service';
 import { CreateOrderProductParams } from './order-product/order-product.interface';
 import { ProductService } from '../product/product.service';
+import { runTransaction } from '../../common/transaction';
+import { Connection } from 'typeorm';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +18,7 @@ export class OrderService {
     private readonly shippingAddressService: ShippingAddressService,
     private readonly creditCardService: CreditCardService,
     private readonly productService: ProductService,
+    private readonly connection: Connection,
   ) {}
 
   async createOrder(
@@ -31,25 +33,26 @@ export class OrderService {
     const itemTotal = await this.productService.calculateProductsPrice(
       orderProductParams,
     );
-    const order = await this.orderRepository.createOrder({
-      ...params,
-      itemTotal,
-      deliveryFee: 0,
+
+    return runTransaction(this.connection, async (qr) => {
+      const order = await this.orderRepository.createOrder(
+        {
+          ...params,
+          itemTotal,
+          deliveryFee: 0,
+        },
+        qr,
+      );
+
+      order.products = await this.orderProductService.createOrderProducts(
+        orderProductParams.map((e) => ({
+          ...e,
+          orderId: order.id,
+        })),
+        qr,
+      );
+
+      return order;
     });
-
-    order.products = await this.orderProductService.createOrderProducts(
-      orderProductParams.map((e) => ({
-        ...e,
-        orderId: order.id,
-      })),
-    );
-
-    return order;
-  }
-
-  async validateOrderById(orderId: number): Promise<void> {
-    if (!(await this.orderRepository.existsById(orderId))) {
-      throw new NotFoundException(ExceptionMessageCode.ORDER_NOT_FOUND);
-    }
   }
 }
