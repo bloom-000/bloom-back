@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -9,6 +10,10 @@ import { PasswordEncoder } from './helper/password.encoder';
 import { JwtHelper } from './helper/jwt.helper';
 import { Request, Response } from 'express';
 import { AuthenticationCookieService } from './authentication-cookie.service';
+import {
+  SignInParams,
+  SignUpWithTokenParams,
+} from './authentication.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,13 +24,8 @@ export class AuthenticationService {
     private readonly authenticationCookieService: AuthenticationCookieService,
   ) {}
 
-  async signIn(
-    email: string,
-    password: string,
-    request: Request,
-    response: Response,
-  ) {
-    const user = await this.userService.findByEmail(email);
+  async signIn(params: SignInParams, request: Request, response: Response) {
+    const user = await this.userService.findByEmail(params.email);
     if (!user) {
       throw new UnauthorizedException(
         ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
@@ -33,7 +33,7 @@ export class AuthenticationService {
     }
 
     const passwordMatches = await this.passwordEncoder.matches(
-      password,
+      params.password,
       user.password,
     );
     if (!passwordMatches) {
@@ -124,5 +124,58 @@ export class AuthenticationService {
     }
 
     await this.jwtHelper.validateRefreshToken(refreshToken);
+  }
+
+  async signUpWithToken(params: SignUpWithTokenParams): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    if (await this.userService.userExistsByEmail(params.email)) {
+      throw new ConflictException(
+        ExceptionMessageCode.USER_EMAIL_ALREADY_EXISTS,
+      );
+    }
+
+    const user = await this.userService.createUser({
+      ...params,
+      refreshTokens: [],
+    });
+
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({
+        userId: user.id,
+      });
+    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
+  }
+
+  async signInWithToken(
+    params: SignInParams,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await this.userService.findByEmail(params.email);
+    if (!user) {
+      throw new UnauthorizedException(
+        ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
+      );
+    }
+
+    const passwordMatches = await this.passwordEncoder.matches(
+      params.password,
+      user.password,
+    );
+    if (!passwordMatches) {
+      throw new UnauthorizedException(
+        ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
+      );
+    }
+
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({
+        userId: user.id,
+      });
+    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
   }
 }

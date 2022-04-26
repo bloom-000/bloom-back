@@ -3,7 +3,7 @@ import { UserRepository } from './user.repository';
 import { User } from '../../model/entity/user.entity';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { Permission } from '../../model/entity/permission.entity';
-import { GetUsersParams } from './user.interface';
+import { CreateUserParams, GetUsersParams } from './user.interface';
 import { DataPage } from '../../model/common/data-page';
 
 @Injectable()
@@ -45,5 +45,13 @@ export class UserService {
 
   async getUsers(params: GetUsersParams): Promise<DataPage<User>> {
     return this.userRepository.getUsers(params);
+  }
+
+  async userExistsByEmail(email: string): Promise<boolean> {
+    return this.userRepository.existsByEmail(email);
+  }
+
+  async createUser(params: CreateUserParams): Promise<User> {
+    return this.userRepository.createUser(params);
   }
 }

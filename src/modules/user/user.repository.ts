@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../../model/entity/user.entity';
 import { Role } from '../../model/entity/role.entity';
 import { DataPage } from '../../model/common/data-page';
-import { GetUsersParams } from './user.interface';
+import { CreateUserParams, GetUsersParams } from './user.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -56,5 +56,19 @@ export class UserRepository extends Repository<User> {
       .getManyAndCount();
 
     return { data, total };
+  }
+
+  async existsByEmail(email: string): Promise<boolean> {
+    const count = await this.createQueryBuilder('users')
+      .where('users.email = :email', { email })
+      .getCount();
+
+    return count > 0;
+  }
+
+  async createUser(params: CreateUserParams): Promise<User> {
+    const entity = this.create(params);
+
+    return this.save(entity);
   }
 }
