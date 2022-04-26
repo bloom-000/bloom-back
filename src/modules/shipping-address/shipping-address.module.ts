@@ -12,5 +12,6 @@ import { CurrentUserPayloadInterceptorModule } from '../../decorator/current-use
   ],
   providers: [ShippingAddressService],
   controllers: [ShippingAddressController],
+  exports: [ShippingAddressService],
 })
 export class ShippingAddressModule {}

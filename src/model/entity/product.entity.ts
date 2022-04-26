@@ -1,7 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Category } from './category.entity';
 import { ProductImage } from './product-image.entity';
 import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
+import { Order } from './order.entity';
 
 @Entity({ name: 'products' })
 export class Product extends AbstractNumberPkEntity {
@@ -29,4 +37,7 @@ export class Product extends AbstractNumberPkEntity {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   images: ProductImage[];
+
+  @ManyToMany(() => Order, (order) => order.products)
+  orders: Order[];
 }

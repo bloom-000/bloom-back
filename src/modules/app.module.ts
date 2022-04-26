@@ -13,6 +13,7 @@ import { PermissionModule } from './permission/permission.module';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 import { CreditCardModule } from './credit-card/credit-card.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CreditCardModule } from './credit-card/credit-card.module';
     PermissionModule,
     ShippingAddressModule,
     CreditCardModule,
+    OrderModule,
   ],
   providers: [
     {

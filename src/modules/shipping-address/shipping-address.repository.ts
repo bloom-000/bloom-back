@@ -73,4 +73,12 @@ export class ShippingAddressRepository extends Repository<ShippingAddress> {
       .where('shippingAddresses.userId = :userId', { userId })
       .getMany();
   }
+
+  async existsById(shippingAddressId: number) {
+    const count = await this.createQueryBuilder('shippingAddresses')
+      .where('shippingAddresses.id = :shippingAddressId', { shippingAddressId })
+      .getCount();
+
+    return count > 0;
+  }
 }

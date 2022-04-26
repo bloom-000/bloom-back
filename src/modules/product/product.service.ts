@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -31,7 +32,7 @@ export class ProductService {
     },
   ): Promise<Product> {
     await this.categoryService.validateCategoryById(params.categoryId);
-    if (await this.productRepository.productExistsWithName(params.name)) {
+    if (await this.productRepository.existsByName(params.name)) {
       throw new ConflictException(
         ExceptionMessageCode.PRODUCT_NAME_ALREADY_USED,
       );
@@ -107,5 +108,38 @@ export class ProductService {
     }
 
     return product;
+  }
+
+  async validateProductById(productId: number): Promise<void> {
+    if (!(await this.productRepository.existsById(productId))) {
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
+    }
+  }
+
+  async calculateProductsPrice(
+    params: { productId: number; quantity: number }[],
+  ): Promise<number> {
+    const productPrices = await this.productRepository.getProductPrices(
+      params.map((e) => e.productId),
+    );
+
+    if (productPrices.length !== params.length) {
+      throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
+    }
+
+    let itemTotal = 0;
+    for (const { productId, stockQuantity, price } of productPrices) {
+      const quantity = params.find((e) => e.productId === productId).quantity;
+
+      if (stockQuantity < quantity) {
+        throw new BadRequestException(
+          ExceptionMessageCode.INSUFFICIENT_STOCK_QUANTITY,
+        );
+      }
+
+      itemTotal += quantity * price;
+    }
+
+    return itemTotal;
   }
 }

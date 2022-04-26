@@ -15,7 +15,7 @@ export class ProductRepository extends Repository<Product> {
     return this.save(entity);
   }
 
-  async productExistsWithName(productName: string): Promise<boolean> {
+  async existsByName(productName: string): Promise<boolean> {
     const count = await this.createQueryBuilder('products')
       .where('products.name = :productName', { productName })
       .getCount();
@@ -85,5 +85,30 @@ export class ProductRepository extends Repository<Product> {
       .leftJoinAndSelect('products.images', 'images')
       .where('products.id = :productId', { productId })
       .getOne();
+  }
+
+  async existsById(productId: number): Promise<boolean> {
+    const count = await this.createQueryBuilder('products')
+      .where('products.id = :productId', { productId })
+      .getCount();
+
+    return count > 0;
+  }
+
+  async getProductPrices(
+    productIds: number[],
+  ): Promise<{ productId: number; price: number; stockQuantity: number }[]> {
+    if (productIds.length === 0) return [];
+
+    const result = await this.createQueryBuilder('products')
+      .select(['products.id', 'products.price', 'products.stockQuantity'])
+      .where('products.id IN (:...productIds)', { productIds })
+      .getMany();
+
+    return result.map((e) => ({
+      productId: e.id,
+      price: e.price,
+      stockQuantity: e.stockQuantity,
+    }));
   }
 }

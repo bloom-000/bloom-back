@@ -28,7 +28,9 @@ export class CreateCreditCardDto {
   @IsBoolean()
   isDefault: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    default: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 5),
+  })
   @Type(() => Date)
   @IsDate()
   expiryDate: Date;

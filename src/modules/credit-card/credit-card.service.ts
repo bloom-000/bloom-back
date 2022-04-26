@@ -91,4 +91,10 @@ export class CreditCardService {
   async getCreditCards(userId: number): Promise<CreditCard[]> {
     return this.creditCardRepository.getAllByUserId(userId);
   }
+
+  async validateCreditCardById(creditCardId: number): Promise<void> {
+    if (!(await this.creditCardRepository.existsById(creditCardId))) {
+      throw new NotFoundException(ExceptionMessageCode.CREDIT_CARD_NOT_FOUND);
+    }
+  }
 }

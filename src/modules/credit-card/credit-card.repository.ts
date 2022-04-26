@@ -68,4 +68,12 @@ export class CreditCardRepository extends Repository<CreditCard> {
       .where('creditCards.userId = :userId', { userId })
       .getMany();
   }
+
+  async existsById(creditCardId: number) {
+    const count = await this.createQueryBuilder('creditCards')
+      .where('creditCards.id = :creditCardId', { creditCardId })
+      .getCount();
+
+    return count > 0;
+  }
 }

@@ -93,4 +93,12 @@ export class ShippingAddressService {
   async getShippingAddresses(userId: number): Promise<ShippingAddress[]> {
     return this.shippingAddressRepository.getAllByUserId(userId);
   }
+
+  async validateShippingAddressById(shippingAddressId: number): Promise<void> {
+    if (!(await this.shippingAddressRepository.existsById(shippingAddressId))) {
+      throw new NotFoundException(
+        ExceptionMessageCode.SHIPPING_ADDRESS_NOT_FOUND,
+      );
+    }
+  }
 }
