@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -49,6 +50,11 @@ export class CreateProductDto {
   @IsInt()
   @Type(() => Number)
   stockQuantity: number;
+
+  @ApiProperty()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isPromotion: boolean;
 
   @ApiProperty({ isArray: true, type: ProductImageInfoDto })
   @IsArray()

@@ -7,6 +7,7 @@ export interface CreateProductParams {
   price: number;
   oldPrice?: number;
   stockQuantity: number;
+  isPromotion: boolean;
 }
 
 export type UpdateProductParams = Partial<CreateProductParams> & {

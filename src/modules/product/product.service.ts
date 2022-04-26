@@ -142,4 +142,8 @@ export class ProductService {
 
     return itemTotal;
   }
+
+  async getPromotedProducts(): Promise<Product[]> {
+    return this.productRepository.getPromoted();
+  }
 }

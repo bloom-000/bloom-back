@@ -117,4 +117,10 @@ export class ProductController {
   async getProduct(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productService.getProductById(id);
   }
+
+  @ApiOkResponse()
+  @Get('/promoted')
+  async getPromotedProducts(): Promise<Product[]> {
+    return this.productService.getPromotedProducts();
+  }
 }

@@ -111,4 +111,10 @@ export class ProductRepository extends Repository<Product> {
       stockQuantity: e.stockQuantity,
     }));
   }
+
+  async getPromoted(): Promise<Product[]> {
+    return this.createQueryBuilder('products')
+      .where('products.isPromotion = true')
+      .getMany();
+  }
 }

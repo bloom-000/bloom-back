@@ -31,6 +31,9 @@ export class Product extends AbstractNumberPkEntity {
   @Column({ name: 'stock_quantity' })
   stockQuantity: number;
 
+  @Column({ name: 'is_promotion' })
+  isPromotion: boolean;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
