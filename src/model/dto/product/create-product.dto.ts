@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   Min,
@@ -21,10 +22,8 @@ export class CreateProductDto {
   name: string;
 
   @ApiProperty()
-  @IsNumber()
-  @IsInt()
-  @Type(() => Number)
-  categoryId: number;
+  @IsNumberString()
+  categoryId: string;
 
   @ApiPropertyOptional()
   @IsString()
@@ -32,23 +31,23 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
-  @Type(() => Number)
   price: number;
 
   @ApiPropertyOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   @IsOptional()
-  @Type(() => Number)
   oldPrice: number;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   @IsInt()
-  @Type(() => Number)
   stockQuantity: number;
 
   @ApiProperty()

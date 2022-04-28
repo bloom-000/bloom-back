@@ -6,10 +6,10 @@ import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
 @Entity({ name: 'order_products' })
 export class OrderProduct extends AbstractNumberPkEntity {
   @Column({ name: 'order_id' })
-  orderId: number;
+  orderId: string;
 
   @Column({ name: 'product_id' })
-  productId: number;
+  productId: string;
 
   @Column({ name: 'quantity' })
   quantity: number;

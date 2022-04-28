@@ -16,7 +16,7 @@ export class CreditCardService {
   constructor(private readonly creditCardRepository: CreditCardRepository) {}
 
   async createCreditCard(
-    currentUserId: number,
+    currentUserId: string,
     params: Omit<CreateCreditCardParams, 'userId'>,
   ): Promise<CreditCard> {
     if (params.isDefault) {
@@ -30,8 +30,8 @@ export class CreditCardService {
   }
 
   async updateCreditCard(
-    currentUserId: number,
-    creditCardId: number,
+    currentUserId: string,
+    creditCardId: string,
     params: UpdateCreditCardParams,
   ): Promise<CreditCard> {
     const creditCardUserId = await this.creditCardRepository.getUserIdById(
@@ -56,8 +56,8 @@ export class CreditCardService {
   }
 
   async deleteCreditCard(
-    currentUserId: number,
-    creditCardId: number,
+    currentUserId: string,
+    creditCardId: string,
   ): Promise<void> {
     const creditCardUserId = await this.creditCardRepository.getUserIdById(
       creditCardId,
@@ -76,7 +76,7 @@ export class CreditCardService {
     await this.creditCardRepository.deleteById(creditCardId);
   }
 
-  async getDefaultCreditCard(userId: number): Promise<CreditCard> {
+  async getDefaultCreditCard(userId: string): Promise<CreditCard> {
     const defaultCreditCard =
       await this.creditCardRepository.getDefaultByUserId(userId);
     if (!defaultCreditCard) {
@@ -88,11 +88,11 @@ export class CreditCardService {
     return defaultCreditCard;
   }
 
-  async getCreditCards(userId: number): Promise<CreditCard[]> {
+  async getCreditCards(userId: string): Promise<CreditCard[]> {
     return this.creditCardRepository.getAllByUserId(userId);
   }
 
-  async validateCreditCardById(creditCardId: number): Promise<void> {
+  async validateCreditCardById(creditCardId: string): Promise<void> {
     if (!(await this.creditCardRepository.existsById(creditCardId))) {
       throw new NotFoundException(ExceptionMessageCode.CREDIT_CARD_NOT_FOUND);
     }

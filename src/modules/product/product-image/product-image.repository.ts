@@ -13,8 +13,8 @@ export class ProductImageRepository extends Repository<ProductImage> {
   }
 
   async deleteImagesByProductId(
-    productId: number,
-    keepImageIds?: number[],
+    productId: string,
+    keepImageIds?: string[],
   ): Promise<void> {
     const query = await this.createQueryBuilder().where(
       'productId = :productId',

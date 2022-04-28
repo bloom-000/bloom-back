@@ -17,7 +17,7 @@ export class Product extends AbstractNumberPkEntity {
   name: string;
 
   @Column({ name: 'category_id' })
-  categoryId: number;
+  categoryId: string;
 
   @Column({ name: 'description', type: 'text', nullable: true })
   description?: string;

@@ -28,7 +28,7 @@ export class PermissionService {
     return this.permissionRepository.getAllPermissions();
   }
 
-  async deletePermissionById(permissionId: number): Promise<void> {
+  async deletePermissionById(permissionId: string): Promise<void> {
     const didDelete = await this.permissionRepository.deleteById(permissionId);
     if (!didDelete) {
       throw new NotFoundException(ExceptionMessageCode.PERMISSION_NOT_FOUND);

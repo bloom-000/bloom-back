@@ -17,7 +17,7 @@ export class CreditCard extends AbstractNumberPkEntity {
   expiryDate: Date;
 
   @Column({ name: 'user_id' })
-  userId: number;
+  userId: string;
 
   @Column({ name: 'is_default' })
   isDefault: boolean;

@@ -19,7 +19,7 @@ export class UserRepository extends Repository<User> {
   }
 
   async updateRefreshTokens(
-    userId: number,
+    userId: string,
     refreshTokens: string[],
   ): Promise<void> {
     await this.createQueryBuilder('users')
@@ -28,7 +28,7 @@ export class UserRepository extends Repository<User> {
       .execute();
   }
 
-  async getRefreshTokensFor(userId: number): Promise<string[] | undefined> {
+  async getRefreshTokensFor(userId: string): Promise<string[] | undefined> {
     const result = await this.createQueryBuilder('users')
       .select('users.refreshTokens', 'refreshTokens')
       .where('users.id = :userId', { userId })
@@ -37,7 +37,7 @@ export class UserRepository extends Repository<User> {
     return result?.refreshTokens;
   }
 
-  async getRolesForUser(userId: number): Promise<Role[] | undefined> {
+  async getRolesForUser(userId: string): Promise<Role[] | undefined> {
     const result = await this.createQueryBuilder('users')
       .select('users.id')
       .leftJoinAndSelect('users.roles', 'roles')

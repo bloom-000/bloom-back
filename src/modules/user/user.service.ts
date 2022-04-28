@@ -18,23 +18,23 @@ export class UserService {
     return this.userRepository.findByRefreshToken(refreshToken);
   }
 
-  async clearRefreshTokensForUser(userId: number): Promise<void> {
+  async clearRefreshTokensForUser(userId: string): Promise<void> {
     return this.userRepository.updateRefreshTokens(userId, []);
   }
 
-  async addRefreshTokenTo(userId: number, refreshToken: string) {
+  async addRefreshTokenTo(userId: string, refreshToken: string) {
     const refreshTokens = await this.userRepository.getRefreshTokensFor(userId);
     refreshTokens.push(refreshToken);
     return this.userRepository.updateRefreshTokens(userId, refreshTokens);
   }
 
-  async removeRefreshTokenFor(userId: number, refreshToken: string) {
+  async removeRefreshTokenFor(userId: string, refreshToken: string) {
     const refreshTokens = await this.userRepository.getRefreshTokensFor(userId);
     const newRefreshTokens = refreshTokens.filter((e) => e !== refreshToken);
     return this.userRepository.updateRefreshTokens(userId, newRefreshTokens);
   }
 
-  async getUserPermissions(userId: number): Promise<Permission[]> {
+  async getUserPermissions(userId: string): Promise<Permission[]> {
     const roles = await this.userRepository.getRolesForUser(userId);
     if (!roles) {
       throw new NotFoundException(ExceptionMessageCode.USER_NOT_FOUND);

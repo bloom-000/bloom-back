@@ -11,6 +11,7 @@ import { runTransaction } from '../../common/transaction';
 import { Connection } from 'typeorm';
 import { DataPage } from '../../model/common/data-page';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { OrderStatus } from '../../model/enum/order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -24,7 +25,7 @@ export class OrderService {
   ) {}
 
   async createOrder(
-    params: Omit<CreateOrderParams, 'deliveryFee' | 'itemTotal'>,
+    params: Omit<CreateOrderParams, 'deliveryFee' | 'itemTotal' | 'status'>,
     orderProductParams: Omit<CreateOrderProductParams, 'orderId'>[],
   ): Promise<Order> {
     await this.deliveryAddressService.validateDeliveryAddressById(
@@ -42,6 +43,7 @@ export class OrderService {
           ...params,
           itemTotal,
           deliveryFee: 0,
+          status: OrderStatus.PENDING,
         },
         qr,
       );
@@ -62,7 +64,7 @@ export class OrderService {
     return this.orderRepository.getOrders(params);
   }
 
-  async getOrderDetails(orderId: number): Promise<Order> {
+  async getOrderDetails(orderId: string): Promise<Order> {
     const order = await this.orderRepository.getOrderDetails(orderId);
     if (!order) {
       throw new NotFoundException(ExceptionMessageCode.ORDER_NOT_FOUND);

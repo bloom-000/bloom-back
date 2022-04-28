@@ -6,7 +6,7 @@ export interface CreateDeliveryAddressParams {
   streetAddress: string;
   postalCode: string;
   isDefault: boolean;
-  userId: number;
+  userId: string;
 }
 
 export type UpdateDeliveryAddressParams = Partial<

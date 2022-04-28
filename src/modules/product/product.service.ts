@@ -52,7 +52,7 @@ export class ProductService {
   }
 
   async updateProduct(
-    productId: number,
+    productId: string,
     params: Omit<UpdateProductParams, 'imageIds'> & {
       images: Omit<CreateProductImageParams, 'productId'>[];
     },
@@ -88,7 +88,7 @@ export class ProductService {
     return product;
   }
 
-  async deleteProduct(productId: number): Promise<void> {
+  async deleteProduct(productId: string): Promise<void> {
     const didDelete = await this.productRepository.deleteProduct(productId);
     if (!didDelete) {
       throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
@@ -101,7 +101,7 @@ export class ProductService {
     return this.productRepository.getProducts(params);
   }
 
-  async getProductById(productId: number): Promise<Product> {
+  async getProductById(productId: string): Promise<Product> {
     const product = await this.productRepository.getById(productId);
     if (!product) {
       throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
@@ -110,14 +110,14 @@ export class ProductService {
     return product;
   }
 
-  async validateProductById(productId: number): Promise<void> {
+  async validateProductById(productId: string): Promise<void> {
     if (!(await this.productRepository.existsById(productId))) {
       throw new NotFoundException(ExceptionMessageCode.PRODUCT_NOT_FOUND);
     }
   }
 
   async calculateProductsPrice(
-    params: { productId: number; quantity: number }[],
+    params: { productId: string; quantity: number }[],
   ): Promise<number> {
     const productPrices = await this.productRepository.getProductPrices(
       params.map((e) => e.productId),

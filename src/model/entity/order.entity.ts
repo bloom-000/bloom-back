@@ -9,13 +9,13 @@ import { OrderStatus } from '../enum/order-status.enum';
 @Entity({ name: 'orders' })
 export class Order extends AbstractNumberPkEntity {
   @Column({ name: 'delivery_address_id' })
-  deliveryAddressId: number;
+  deliveryAddressId: string;
 
   @Column({ name: 'credit_card_id' })
-  creditCardId: number;
+  creditCardId: string;
 
   @Column({ name: 'user_id' })
-  userId: number;
+  userId: string;
 
   @Column({ name: 'total', type: 'real' })
   itemTotal: number;

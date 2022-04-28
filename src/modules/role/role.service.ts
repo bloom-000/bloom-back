@@ -29,7 +29,7 @@ export class RoleService {
     return this.roleRepository.getRoles(params);
   }
 
-  async getRoleById(roleId: number): Promise<Role> {
+  async getRoleById(roleId: string): Promise<Role> {
     const role = await this.roleRepository.getById(roleId);
     if (!role) {
       throw new NotFoundException(ExceptionMessageCode.ROLE_NOT_FOUND);
@@ -38,7 +38,7 @@ export class RoleService {
     return role;
   }
 
-  async updateRole(roleId: number, params: UpdateRoleParams): Promise<Role> {
+  async updateRole(roleId: string, params: UpdateRoleParams): Promise<Role> {
     const role = await this.roleRepository.updateRole(roleId, params);
     if (!role) {
       throw new NotFoundException(ExceptionMessageCode.ROLE_NOT_FOUND);

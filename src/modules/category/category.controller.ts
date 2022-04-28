@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -53,7 +52,7 @@ export class CategoryController {
   @ApiOkResponse()
   @Get('/:id')
   @Permissions(ActionCategory.READ_BY_ID)
-  async getCategory(@Param('id', ParseIntPipe) id: number): Promise<Category> {
+  async getCategory(@Param('id') id: string): Promise<Category> {
     return this.categoryService.getCategory(id);
   }
 
@@ -61,7 +60,7 @@ export class CategoryController {
   @Patch('/:id')
   @Permissions(ActionCategory.UPDATE)
   async updateCategory(
-    @Param('id', ParseIntPipe) categoryId: number,
+    @Param('id') categoryId: string,
     @Body() body: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.updateCategory(categoryId, body);
@@ -70,9 +69,7 @@ export class CategoryController {
   @ApiOkResponse()
   @Delete('/:id')
   @Permissions(ActionCategory.DELETE)
-  async deleteCategory(
-    @Param('id', ParseIntPipe) categoryId: number,
-  ): Promise<void> {
+  async deleteCategory(@Param('id') categoryId: string): Promise<void> {
     return this.categoryService.deleteCategory(categoryId);
   }
 }

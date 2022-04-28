@@ -7,7 +7,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -64,7 +63,7 @@ export class ProductController {
   @Patch('/:id')
   @Permissions(ActionProduct.UPDATE)
   async updateProduct(
-    @Param('id', ParseIntPipe) productId: number,
+    @Param('id') productId: string,
     @Body() body: UpdateProductDto,
   ): Promise<Product> {
     const images: Omit<CreateProductImageParams, 'productId'>[] =
@@ -96,9 +95,7 @@ export class ProductController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/:id')
   @Permissions(ActionProduct.DELETE)
-  async deleteProduct(
-    @Param('id', ParseIntPipe) productId: number,
-  ): Promise<void> {
+  async deleteProduct(@Param('id') productId: string): Promise<void> {
     return this.productService.deleteProduct(productId);
   }
 
@@ -114,7 +111,7 @@ export class ProductController {
   @ApiOkResponse()
   @Get('/:id')
   @Permissions(ActionProduct.READ_BY_ID)
-  async getProduct(@Param('id', ParseIntPipe) id: number): Promise<Product> {
+  async getProduct(@Param('id') id: string): Promise<Product> {
     return this.productService.getProductById(id);
   }
 

@@ -26,7 +26,7 @@ export class DeliveryAddress extends AbstractNumberPkEntity {
   isDefault: boolean;
 
   @Column({ name: 'user_id' })
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })

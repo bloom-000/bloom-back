@@ -70,7 +70,7 @@ export class JwtHelper {
     if (
       !payload ||
       typeof payload !== 'object' ||
-      typeof payload?.userId !== 'number' ||
+      typeof payload?.userId !== 'string' ||
       typeof payload?.iat !== 'number' ||
       typeof payload?.exp !== 'number'
     ) {

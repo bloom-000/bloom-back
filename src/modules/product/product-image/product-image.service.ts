@@ -16,8 +16,8 @@ export class ProductImageService {
   }
 
   async deleteImagesForProduct(
-    productId: number,
-    keepImageIds?: number[],
+    productId: string,
+    keepImageIds?: string[],
   ): Promise<void> {
     await this.productImageRepository.deleteImagesByProductId(
       productId,

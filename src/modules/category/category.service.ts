@@ -34,7 +34,7 @@ export class CategoryService {
   }
 
   async updateCategory(
-    categoryId: number,
+    categoryId: string,
     params: UpdateCategoryParams,
   ): Promise<Category> {
     const category = await this.categoryRepository.updateCategory(
@@ -48,20 +48,20 @@ export class CategoryService {
     return category;
   }
 
-  async validateCategoryById(categoryId: number): Promise<void> {
+  async validateCategoryById(categoryId: string): Promise<void> {
     if (!(await this.categoryRepository.categoryExistsWithId(categoryId))) {
       throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
     }
   }
 
-  async deleteCategory(categoryId: number): Promise<void> {
+  async deleteCategory(categoryId: string): Promise<void> {
     const didDelete = await this.categoryRepository.deleteCategory(categoryId);
     if (!didDelete) {
       throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);
     }
   }
 
-  async getCategory(id: number) {
+  async getCategory(id: string) {
     const category = await this.categoryRepository.getCategoryById(id);
     if (!category) {
       throw new NotFoundException(ExceptionMessageCode.CATEGORY_NOT_FOUND);

@@ -11,7 +11,7 @@ export class ProductImage extends AbstractNumberPkEntity {
   order: number;
 
   @Column({ name: 'product_id' })
-  productId: number;
+  productId: string;
 
   @ManyToOne(() => Product)
   @JoinColumn({ name: 'product_id' })

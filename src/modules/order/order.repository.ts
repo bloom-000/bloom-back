@@ -31,7 +31,7 @@ export class OrderRepository extends Repository<Order> {
     return { data, total };
   }
 
-  async getOrderDetails(orderId: number): Promise<Order | undefined> {
+  async getOrderDetails(orderId: string): Promise<Order | undefined> {
     return this.createQueryBuilder('orders')
       .select(['orders', 'user.id', 'user.fullName'])
       .leftJoin('orders.user', 'user')

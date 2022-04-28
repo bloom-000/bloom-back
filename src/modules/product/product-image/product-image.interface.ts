@@ -1,5 +1,5 @@
 export interface CreateProductImageParams {
   imagePath: string;
   order: number;
-  productId: number;
+  productId: string;
 }

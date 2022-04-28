@@ -28,8 +28,8 @@ export class DeliveryAddressService {
   }
 
   async updateDeliveryAddress(
-    currentUserId: number,
-    deliveryAddressId: number,
+    currentUserId: string,
+    deliveryAddressId: string,
     params: UpdateDeliveryAddressParams,
   ): Promise<DeliveryAddress | undefined> {
     const deliveryAddress = await this.deliveryAddressRepository.getById(
@@ -58,8 +58,8 @@ export class DeliveryAddressService {
   }
 
   async deleteDeliveryAddress(
-    currentUserId: number,
-    deliveryAddressId: number,
+    currentUserId: string,
+    deliveryAddressId: string,
   ): Promise<void> {
     const deliveryAddressUserId =
       await this.deliveryAddressRepository.getUserIdById(deliveryAddressId);
@@ -78,7 +78,7 @@ export class DeliveryAddressService {
     await this.deliveryAddressRepository.deleteById(deliveryAddressId);
   }
 
-  async getDefaultShippingAddress(userId: number): Promise<DeliveryAddress> {
+  async getDefaultShippingAddress(userId: string): Promise<DeliveryAddress> {
     const defaultShippingAddress =
       await this.deliveryAddressRepository.getDefaultByUserId(userId);
     if (!defaultShippingAddress) {
@@ -90,11 +90,11 @@ export class DeliveryAddressService {
     return defaultShippingAddress;
   }
 
-  async getShippingAddresses(userId: number): Promise<DeliveryAddress[]> {
+  async getShippingAddresses(userId: string): Promise<DeliveryAddress[]> {
     return this.deliveryAddressRepository.getAllByUserId(userId);
   }
 
-  async validateDeliveryAddressById(deliveryAddressId: number): Promise<void> {
+  async validateDeliveryAddressById(deliveryAddressId: string): Promise<void> {
     if (!(await this.deliveryAddressRepository.existsById(deliveryAddressId))) {
       throw new NotFoundException(
         ExceptionMessageCode.SHIPPING_ADDRESS_NOT_FOUND,

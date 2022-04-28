@@ -1,5 +1,5 @@
 export interface CreateOrderProductParams {
-  orderId: number;
-  productId: number;
+  orderId: string;
+  productId: string;
   quantity: number;
 }

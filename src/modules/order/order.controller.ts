@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Query,
   UseInterceptors,
@@ -52,7 +51,7 @@ export class OrderController {
   @ApiOkResponse()
   @Get('/:id')
   @Permissions(ActionOrder.READ_BY_ID)
-  async getOrderDetails(@Param('id', ParseIntPipe) id: number): Promise<Order> {
+  async getOrderDetails(@Param('id') id: string): Promise<Order> {
     return this.orderService.getOrderDetails(id);
   }
 }

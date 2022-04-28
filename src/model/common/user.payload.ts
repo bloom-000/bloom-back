@@ -1,9 +1,9 @@
 export interface UserPayload {
-  userId: number;
+  userId: string;
   issuedAt?: number;
   expirationTime?: number;
 }
 
 export interface JwtPayload {
-  userId: number;
+  userId: string;
 }

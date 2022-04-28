@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   UseInterceptors,
@@ -46,7 +45,7 @@ export class DeliveryAddressController {
   async updateShippingAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
     @Body() body: UpdateDeliveryAddressDto,
-    @Param('id', ParseIntPipe) deliveryAddressId: number,
+    @Param('id') deliveryAddressId: string,
   ): Promise<DeliveryAddress> {
     return this.deliveryAddressService.updateDeliveryAddress(
       currentUserPayload.userId,
@@ -60,7 +59,7 @@ export class DeliveryAddressController {
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async deleteDeliveryAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-    @Param('id', ParseIntPipe) deliveryAddressId: number,
+    @Param('id') deliveryAddressId: string,
   ): Promise<void> {
     return this.deliveryAddressService.deleteDeliveryAddress(
       currentUserPayload.userId,

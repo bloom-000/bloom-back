@@ -14,7 +14,7 @@ export class CreditCardRepository extends Repository<CreditCard> {
   }
 
   async updateCreditCard(
-    creditCardId: number,
+    creditCardId: string,
     params: UpdateCreditCardParams,
   ): Promise<CreditCard | undefined> {
     const creditCard = await this.createQueryBuilder('creditCards')
@@ -34,7 +34,7 @@ export class CreditCardRepository extends Repository<CreditCard> {
     });
   }
 
-  async getUserIdById(id: number): Promise<number | undefined> {
+  async getUserIdById(id: string): Promise<string | undefined> {
     const result = await this.createQueryBuilder('creditCards')
       .select('creditCars.userId', 'userId')
       .where('creditCards.id = :id', { id })
@@ -43,33 +43,33 @@ export class CreditCardRepository extends Repository<CreditCard> {
     return result?.userId;
   }
 
-  async deleteById(id: number): Promise<boolean> {
+  async deleteById(id: string): Promise<boolean> {
     const result = await this.softDelete({ id });
 
     return !!result.affected;
   }
 
-  async getDefaultByUserId(userId: number): Promise<CreditCard | undefined> {
+  async getDefaultByUserId(userId: string): Promise<CreditCard | undefined> {
     return this.createQueryBuilder('creditCards')
       .where('creditCards.userId = :userId', { userId })
       .andWhere('creditCards.isDefault = true')
       .getOne();
   }
 
-  async setAllToNonDefault(userId: number): Promise<void> {
+  async setAllToNonDefault(userId: string): Promise<void> {
     await this.createQueryBuilder()
       .update(CreditCard, { isDefault: false })
       .where('userId = :userId', { userId })
       .execute();
   }
 
-  async getAllByUserId(userId: number): Promise<CreditCard[]> {
+  async getAllByUserId(userId: string): Promise<CreditCard[]> {
     return this.createQueryBuilder('creditCards')
       .where('creditCards.userId = :userId', { userId })
       .getMany();
   }
 
-  async existsById(creditCardId: number) {
+  async existsById(creditCardId: string) {
     const count = await this.createQueryBuilder('creditCards')
       .where('creditCards.id = :creditCardId', { creditCardId })
       .getCount();

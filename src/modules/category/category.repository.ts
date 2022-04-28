@@ -46,7 +46,7 @@ export class CategoryRepository extends Repository<Category> {
   }
 
   async updateCategory(
-    categoryId: number,
+    categoryId: string,
     params: UpdateCategoryParams,
   ): Promise<Category | undefined> {
     const category = await this.findOne({ where: { id: categoryId } });
@@ -60,7 +60,7 @@ export class CategoryRepository extends Repository<Category> {
     });
   }
 
-  async categoryExistsWithId(categoryId: number): Promise<boolean> {
+  async categoryExistsWithId(categoryId: string): Promise<boolean> {
     const count = await this.createQueryBuilder('categories')
       .where('categories.id = :categoryId', { categoryId })
       .getCount();
@@ -68,13 +68,13 @@ export class CategoryRepository extends Repository<Category> {
     return count > 0;
   }
 
-  async deleteCategory(categoryId: number): Promise<boolean> {
+  async deleteCategory(categoryId: string): Promise<boolean> {
     const result = await this.softDelete({ id: categoryId });
 
     return !!result.affected;
   }
 
-  async getCategoryById(id: number): Promise<Category | undefined> {
+  async getCategoryById(id: string): Promise<Category | undefined> {
     return this.createQueryBuilder('categories')
       .where('categories.id = :id', { id })
       .getOne();

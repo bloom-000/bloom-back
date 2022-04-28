@@ -2,8 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
-  IsInt,
-  IsNumber,
+  IsNumberString,
   ValidateNested,
 } from '@nestjs/class-validator';
 import { Type } from 'class-transformer';
@@ -11,10 +10,8 @@ import { OrderProductDto } from './order-product.dto';
 
 export class CreateOrderDto {
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
-  @IsInt()
-  deliveryAddressId: number;
+  @IsNumberString()
+  deliveryAddressId: string;
 
   @ApiProperty({ isArray: true, type: OrderProductDto })
   @Type(() => OrderProductDto)
@@ -24,8 +21,6 @@ export class CreateOrderDto {
   products: OrderProductDto[];
 
   @ApiProperty()
-  @Type(() => Number)
-  @IsNumber()
-  @IsInt()
-  creditCardId: number;
+  @IsNumberString()
+  creditCardId: string;
 }

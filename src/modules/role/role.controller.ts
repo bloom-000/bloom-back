@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -40,7 +39,7 @@ export class RoleController {
   @ApiOkResponse()
   @Get('/:id')
   @Permissions(ActionRole.READ_BY_ID)
-  async getRole(@Param('id', ParseIntPipe) roleId: number): Promise<Role> {
+  async getRole(@Param('id') roleId: string): Promise<Role> {
     return this.roleService.getRoleById(roleId);
   }
 
@@ -48,7 +47,7 @@ export class RoleController {
   @Patch('/:id')
   @Permissions(ActionRole.UPDATE)
   async updateRole(
-    @Param('id', ParseIntPipe) roleId: number,
+    @Param('id') roleId: string,
     @Body() body: UpdateRoleDto,
   ): Promise<Role> {
     return this.roleService.updateRole(roleId, body);

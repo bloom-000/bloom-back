@@ -42,7 +42,7 @@ export class RoleRepository extends Repository<Role> {
   }
 
   async updateRole(
-    roleId: number,
+    roleId: string,
     params: UpdateRoleParams,
   ): Promise<Role | undefined> {
     const role = await this.createQueryBuilder('roles')
@@ -71,7 +71,7 @@ export class RoleRepository extends Repository<Role> {
     });
   }
 
-  async getById(roleId: number): Promise<Role | undefined> {
+  async getById(roleId: string): Promise<Role | undefined> {
     return this.createQueryBuilder('roles')
       .where('roles.id = :roleId', { roleId })
       .leftJoinAndSelect('roles.permissions', 'permissions')

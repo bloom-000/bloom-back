@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   UseInterceptors,
@@ -43,7 +42,7 @@ export class CreditCardController {
   @Patch('/:id')
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async updateCreditCard(
-    @Param('id', ParseIntPipe) creditCardId: number,
+    @Param('id') creditCardId: string,
     @Body() body: UpdateCreditCardDto,
     @CurrentUserPayload() currentUserPayload: UserPayload,
   ): Promise<CreditCard> {
@@ -62,7 +61,7 @@ export class CreditCardController {
   @Delete('/:id')
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async deleteCreditCard(
-    @Param('id', ParseIntPipe) creditCardId: number,
+    @Param('id') creditCardId: string,
     @CurrentUserPayload() currentUserPayload: UserPayload,
   ): Promise<void> {
     return this.creditCardService.deleteCreditCard(

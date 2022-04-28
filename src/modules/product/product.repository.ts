@@ -24,7 +24,7 @@ export class ProductRepository extends Repository<Product> {
   }
 
   async updateProduct(
-    productId: number,
+    productId: string,
     params: UpdateProductParams,
   ): Promise<Product | undefined> {
     const product = await this.findOne({
@@ -41,7 +41,7 @@ export class ProductRepository extends Repository<Product> {
     });
   }
 
-  async deleteProduct(productId: number): Promise<boolean> {
+  async deleteProduct(productId: string): Promise<boolean> {
     const result = await this.softDelete({ id: productId });
 
     return !!result.affected;
@@ -79,7 +79,7 @@ export class ProductRepository extends Repository<Product> {
     return { data, total };
   }
 
-  async getById(productId: number): Promise<Product | undefined> {
+  async getById(productId: string): Promise<Product | undefined> {
     return this.createQueryBuilder('products')
       .leftJoinAndSelect('products.category', 'category')
       .leftJoinAndSelect('products.images', 'images')
@@ -87,7 +87,7 @@ export class ProductRepository extends Repository<Product> {
       .getOne();
   }
 
-  async existsById(productId: number): Promise<boolean> {
+  async existsById(productId: string): Promise<boolean> {
     const count = await this.createQueryBuilder('products')
       .where('products.id = :productId', { productId })
       .getCount();
@@ -96,8 +96,8 @@ export class ProductRepository extends Repository<Product> {
   }
 
   async getProductPrices(
-    productIds: number[],
-  ): Promise<{ productId: number; price: number; stockQuantity: number }[]> {
+    productIds: string[],
+  ): Promise<{ productId: string; price: number; stockQuantity: number }[]> {
     if (productIds.length === 0) return [];
 
     const result = await this.createQueryBuilder('products')

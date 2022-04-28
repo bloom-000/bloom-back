@@ -22,7 +22,7 @@ export class PermissionRepository extends Repository<Permission> {
     return this.find();
   }
 
-  async deleteById(id: number): Promise<boolean> {
+  async deleteById(id: string): Promise<boolean> {
     const result = await this.delete({ id });
 
     return !!result.affected;

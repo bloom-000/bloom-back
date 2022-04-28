@@ -4,7 +4,7 @@ export interface CreateCreditCardParams {
   cvv: string;
   expiryDate: Date;
   isDefault: boolean;
-  userId: number;
+  userId: string;
 }
 
 export type UpdateCreditCardParams = Partial<

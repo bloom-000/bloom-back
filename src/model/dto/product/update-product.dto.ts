@@ -1,13 +1,11 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateProductDto } from './create-product.dto';
-import { IsArray, IsNumber, IsOptional } from '@nestjs/class-validator';
-import { Type } from 'class-transformer';
+import { IsArray, IsNumberString, IsOptional } from '@nestjs/class-validator';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
   @ApiPropertyOptional({ isArray: true })
-  @Type(() => Number)
   @IsArray()
-  @IsNumber({}, { each: true })
+  @IsNumberString({}, { each: true })
   @IsOptional()
-  keepImageIds?: number[];
+  keepImageIds?: string[];
 }

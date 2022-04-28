@@ -1,12 +1,11 @@
+import { PageOptionParams } from '../../model/common/page-option.params';
+
 export interface CreateRoleParams {
   name: string;
   description: string;
-  permissionIds: number[];
+  permissionIds: string[];
 }
 
-export interface GetRolesParams {
-  page: number;
-  pageSize: number;
-}
+export type GetRolesParams = PageOptionParams;
 
 export type UpdateRoleParams = Partial<CreateRoleParams>;

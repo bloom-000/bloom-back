@@ -15,7 +15,7 @@ export class DeliveryAddressRepository extends Repository<DeliveryAddress> {
     return this.save(entity);
   }
 
-  async setAllToNonDefault(userId: number): Promise<void> {
+  async setAllToNonDefault(userId: string): Promise<void> {
     await this.createQueryBuilder()
       .update(DeliveryAddress, { isDefault: false })
       .where('userId = :userId', { userId })
@@ -38,19 +38,19 @@ export class DeliveryAddressRepository extends Repository<DeliveryAddress> {
     });
   }
 
-  async getById(id: number): Promise<DeliveryAddress | undefined> {
+  async getById(id: string): Promise<DeliveryAddress | undefined> {
     return this.createQueryBuilder('deliveryAddresses')
       .where('deliveryAddresses.id = :id', { id })
       .getOne();
   }
 
-  async deleteById(id: number): Promise<boolean> {
+  async deleteById(id: string): Promise<boolean> {
     const result = await this.softDelete({ id });
 
     return !!result.affected;
   }
 
-  async getUserIdById(id: number): Promise<number> {
+  async getUserIdById(id: string): Promise<string> {
     const result = await this.createQueryBuilder('deliveryAddresses')
       .select('deliveryAddresses.userId', 'userId')
       .where('deliveryAddresses.id = :id', { id })
@@ -60,7 +60,7 @@ export class DeliveryAddressRepository extends Repository<DeliveryAddress> {
   }
 
   async getDefaultByUserId(
-    userId: number,
+    userId: string,
   ): Promise<DeliveryAddress | undefined> {
     return this.createQueryBuilder('deliveryAddresses')
       .where('deliveryAddresses.userId = :userId', { userId })
@@ -68,13 +68,13 @@ export class DeliveryAddressRepository extends Repository<DeliveryAddress> {
       .getOne();
   }
 
-  async getAllByUserId(userId: number): Promise<DeliveryAddress[]> {
+  async getAllByUserId(userId: string): Promise<DeliveryAddress[]> {
     return this.createQueryBuilder('deliveryAddresses')
       .where('deliveryAddresses.userId = :userId', { userId })
       .getMany();
   }
 
-  async existsById(deliveryAddressId: number) {
+  async existsById(deliveryAddressId: string) {
     const count = await this.createQueryBuilder('deliveryAddresses')
       .where('deliveryAddresses.id = :deliveryAddressId', { deliveryAddressId })
       .getCount();
