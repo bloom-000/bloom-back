@@ -136,8 +136,10 @@ export class AuthenticationService {
       );
     }
 
+    const hashedPassword = await this.passwordEncoder.encode(params.password);
     const user = await this.userService.createUser({
       ...params,
+      password: hashedPassword,
       refreshTokens: [],
     });
 

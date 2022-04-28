@@ -18,11 +18,17 @@ export class OrderRepository extends Repository<Order> {
   }
 
   async getOrders(params: FilterOrdersParams): Promise<DataPage<Order>> {
-    const { page, pageSize } = params;
+    const { page, pageSize, userId } = params;
 
-    const [data, total] = await this.createQueryBuilder('orders')
+    const query = this.createQueryBuilder('orders')
       .select(['orders', 'user.id', 'user.fullName', 'user.email', ''])
-      .leftJoin('orders.user', 'user')
+      .leftJoin('orders.user', 'user');
+
+    if (userId) {
+      query.andWhere('orders.userId = :userId', { userId });
+    }
+
+    const [data, total] = await query
       .orderBy('orders.createdAt')
       .skip((page - 1) * pageSize)
       .take(pageSize)

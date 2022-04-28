@@ -71,4 +71,20 @@ export class UserRepository extends Repository<User> {
 
     return this.save(entity);
   }
+
+  async getUserDetails(userId: string): Promise<User | undefined> {
+    return this.createQueryBuilder('users')
+      .select([
+        'users.id',
+        'users.createdAt',
+        'users.updatedAt',
+        'users.deletedAt',
+        'users.fullName',
+        'users.email',
+        'users.gender',
+        'users.birthDate',
+      ])
+      .where('users.id = :userId', { userId })
+      .getOne();
+  }
 }

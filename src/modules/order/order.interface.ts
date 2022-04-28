@@ -10,4 +10,6 @@ export interface CreateOrderParams {
   status: OrderStatus;
 }
 
-export type FilterOrdersParams = PageOptionParams;
+export interface FilterOrdersParams extends PageOptionParams {
+  userId?: string;
+}
