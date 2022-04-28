@@ -1,16 +1,21 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { ShippingAddress } from './shipping-address.entity';
+import { DeliveryAddress } from './delivery-address.entity';
 import { CreditCard } from './credit-card.entity';
 import { OrderProduct } from './order-product.entity';
 import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
+import { User } from './user.entity';
+import { OrderStatus } from '../enum/order-status.enum';
 
 @Entity({ name: 'orders' })
 export class Order extends AbstractNumberPkEntity {
-  @Column({ name: 'shipping_address_id' })
-  shippingAddressId: number;
+  @Column({ name: 'delivery_address_id' })
+  deliveryAddressId: number;
 
   @Column({ name: 'credit_card_id' })
   creditCardId: number;
+
+  @Column({ name: 'user_id' })
+  userId: number;
 
   @Column({ name: 'total', type: 'real' })
   itemTotal: number;
@@ -18,14 +23,21 @@ export class Order extends AbstractNumberPkEntity {
   @Column({ name: 'delivery_fee', type: 'real' })
   deliveryFee: number;
 
+  @Column({ name: 'status', type: 'enum', enum: OrderStatus })
+  status: OrderStatus;
+
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order)
   products: OrderProduct[];
 
-  @ManyToOne(() => ShippingAddress)
-  @JoinColumn({ name: 'shipping_address_id' })
-  shippingAddress: ShippingAddress;
+  @ManyToOne(() => DeliveryAddress)
+  @JoinColumn({ name: 'delivery_address_id' })
+  deliveryAddress: DeliveryAddress;
 
   @ManyToOne(() => CreditCard)
   @JoinColumn({ name: 'credit_card_id' })
   creditCard: CreditCard;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

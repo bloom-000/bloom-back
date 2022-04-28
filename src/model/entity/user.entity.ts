@@ -5,6 +5,9 @@ import { Gender } from '../enum/gender.enum';
 
 @Entity({ name: 'users' })
 export class User extends AbstractNumberPkEntity {
+  @Column({ name: 'full_name' })
+  fullName: string;
+
   @Column({ name: 'email' })
   email: string;
 

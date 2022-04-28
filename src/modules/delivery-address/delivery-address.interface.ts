@@ -1,4 +1,4 @@
-export interface CreateShippingAddressParams {
+export interface CreateDeliveryAddressParams {
   fullName: string;
   phoneNumber: string;
   country: string;
@@ -9,6 +9,6 @@ export interface CreateShippingAddressParams {
   userId: number;
 }
 
-export type UpdateShippingAddressParams = Partial<
-  Omit<CreateShippingAddressParams, 'userId'>
+export type UpdateDeliveryAddressParams = Partial<
+  Omit<CreateDeliveryAddressParams, 'userId'>
 >;

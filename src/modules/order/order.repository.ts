@@ -1,6 +1,7 @@
 import { EntityRepository, QueryRunner, Repository } from 'typeorm';
 import { Order } from '../../model/entity/order.entity';
-import { CreateOrderParams } from './order.interface';
+import { CreateOrderParams, FilterOrdersParams } from './order.interface';
+import { DataPage } from '../../model/common/data-page';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
@@ -16,11 +17,28 @@ export class OrderRepository extends Repository<Order> {
     return this.save(entity, qr);
   }
 
-  async existsById(orderId: number): Promise<boolean> {
-    const count = await this.createQueryBuilder('orders')
-      .where('orders.id = :orderId', { orderId })
-      .getCount();
+  async getOrders(params: FilterOrdersParams): Promise<DataPage<Order>> {
+    const { page, pageSize } = params;
 
-    return count > 0;
+    const [data, total] = await this.createQueryBuilder('orders')
+      .select(['orders', 'user.id', 'user.fullName', 'user.email', ''])
+      .leftJoin('orders.user', 'user')
+      .orderBy('orders.createdAt')
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    return { data, total };
+  }
+
+  async getOrderDetails(orderId: number): Promise<Order | undefined> {
+    return this.createQueryBuilder('orders')
+      .select(['orders', 'user.id', 'user.fullName'])
+      .leftJoin('orders.user', 'user')
+      .leftJoinAndSelect('orders.products', 'products')
+      .leftJoinAndSelect('products.product', 'orderProduct')
+      .leftJoinAndSelect('orders.deliveryAddress', 'deliveryAddress')
+      .where('orders.id = :orderId', { orderId })
+      .getOne();
   }
 }

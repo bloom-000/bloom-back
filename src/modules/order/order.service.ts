@@ -1,21 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { CreateOrderParams } from './order.interface';
+import { CreateOrderParams, FilterOrdersParams } from './order.interface';
 import { Order } from '../../model/entity/order.entity';
 import { OrderProductService } from './order-product/order-product.service';
-import { ShippingAddressService } from '../shipping-address/shipping-address.service';
+import { DeliveryAddressService } from '../delivery-address/delivery-address.service';
 import { CreditCardService } from '../credit-card/credit-card.service';
 import { CreateOrderProductParams } from './order-product/order-product.interface';
 import { ProductService } from '../product/product.service';
 import { runTransaction } from '../../common/transaction';
 import { Connection } from 'typeorm';
+import { DataPage } from '../../model/common/data-page';
+import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly orderProductService: OrderProductService,
-    private readonly shippingAddressService: ShippingAddressService,
+    private readonly deliveryAddressService: DeliveryAddressService,
     private readonly creditCardService: CreditCardService,
     private readonly productService: ProductService,
     private readonly connection: Connection,
@@ -25,8 +27,8 @@ export class OrderService {
     params: Omit<CreateOrderParams, 'deliveryFee' | 'itemTotal'>,
     orderProductParams: Omit<CreateOrderProductParams, 'orderId'>[],
   ): Promise<Order> {
-    await this.shippingAddressService.validateShippingAddressById(
-      params.shippingAddressId,
+    await this.deliveryAddressService.validateDeliveryAddressById(
+      params.deliveryAddressId,
     );
     await this.creditCardService.validateCreditCardById(params.creditCardId);
 
@@ -54,5 +56,18 @@ export class OrderService {
 
       return order;
     });
+  }
+
+  async getOrders(params: FilterOrdersParams): Promise<DataPage<Order>> {
+    return this.orderRepository.getOrders(params);
+  }
+
+  async getOrderDetails(orderId: number): Promise<Order> {
+    const order = await this.orderRepository.getOrderDetails(orderId);
+    if (!order) {
+      throw new NotFoundException(ExceptionMessageCode.ORDER_NOT_FOUND);
+    }
+
+    return order;
   }
 }

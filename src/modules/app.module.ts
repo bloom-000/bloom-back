@@ -11,7 +11,7 @@ import { join } from 'path';
 import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
-import { ShippingAddressModule } from './shipping-address/shipping-address.module';
+import { DeliveryAddressModule } from './delivery-address/delivery-address.module';
 import { CreditCardModule } from './credit-card/credit-card.module';
 import { OrderModule } from './order/order.module';
 
@@ -27,7 +27,7 @@ import { OrderModule } from './order/order.module';
     ProductModule,
     RoleModule,
     PermissionModule,
-    ShippingAddressModule,
+    DeliveryAddressModule,
     CreditCardModule,
     OrderModule,
   ],

@@ -2,8 +2,8 @@ import { AbstractNumberPkEntity } from './core/abstract-number-pk.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity({ name: 'shipping_addresses' })
-export class ShippingAddress extends AbstractNumberPkEntity {
+@Entity({ name: 'delivery_addresses' })
+export class DeliveryAddress extends AbstractNumberPkEntity {
   @Column({ name: 'full_name' })
   fullName: string;
 

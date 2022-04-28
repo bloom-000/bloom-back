@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsString } from '@nestjs/class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateShippingAddressDto {
+export class CreateDeliveryAddressDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

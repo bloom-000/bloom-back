@@ -5,6 +5,7 @@ import { ActionPermission } from '../../common/actions/permission.action';
 import { ActionProduct } from '../../common/actions/product.action';
 import { ActionRole } from '../../common/actions/role.action';
 import { ActionUser } from '../../common/actions/user.action';
+import { ActionOrder } from '../../common/actions/order.action';
 
 @Injectable()
 export class PermissionSynchronizerService implements OnModuleInit {
@@ -18,6 +19,7 @@ export class PermissionSynchronizerService implements OnModuleInit {
         ActionProduct,
         ActionRole,
         ActionUser,
+        ActionOrder,
       ].map((e) => Object.values(e)),
     );
 

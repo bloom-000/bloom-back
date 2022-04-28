@@ -14,7 +14,7 @@ export class CreateOrderDto {
   @Type(() => Number)
   @IsNumber()
   @IsInt()
-  shippingAddressId: number;
+  deliveryAddressId: number;
 
   @ApiProperty({ isArray: true, type: OrderProductDto })
   @Type(() => OrderProductDto)

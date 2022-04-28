@@ -4,6 +4,7 @@ import { Gender } from '../../model/enum/gender.enum';
 export type GetUsersParams = PageOptionParams;
 
 export interface CreateUserParams {
+  fullName: string;
   email: string;
   password: string;
   refreshTokens: string[];

@@ -10,31 +10,31 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { ShippingAddressService } from './shipping-address.service';
-import { ShippingAddress } from '../../model/entity/shipping-address.entity';
+import { DeliveryAddressService } from './delivery-address.service';
+import { DeliveryAddress } from '../../model/entity/delivery-address.entity';
 import {
   CurrentUserPayload,
   CurrentUserPayloadInterceptor,
 } from '../../decorator/current-user-payload.decorator';
 import { UserPayload } from '../../model/common/user.payload';
-import { CreateShippingAddressDto } from '../../model/dto/shipping-address/create-shipping-address.dto';
-import { UpdateShippingAddressDto } from '../../model/dto/shipping-address/update-shipping-address.dto';
+import { CreateDeliveryAddressDto } from '../../model/dto/delivery-address/create-delivery-address.dto';
+import { UpdateDeliveryAddressDto } from '../../model/dto/delivery-address/update-delivery-address.dto';
 
-@ApiTags('shipping-addresses')
-@Controller('/shipping-addresses')
-export class ShippingAddressController {
+@ApiTags('delivery-addresses')
+@Controller('/delivery-addresses')
+export class DeliveryAddressController {
   constructor(
-    private readonly shippingAddressService: ShippingAddressService,
+    private readonly deliveryAddressService: DeliveryAddressService,
   ) {}
 
   @ApiCreatedResponse()
   @Post()
   @UseInterceptors(CurrentUserPayloadInterceptor)
-  async createShippingAddress(
+  async createDeliveryAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-    @Body() body: CreateShippingAddressDto,
-  ): Promise<ShippingAddress> {
-    return this.shippingAddressService.createShippingAddress({
+    @Body() body: CreateDeliveryAddressDto,
+  ): Promise<DeliveryAddress> {
+    return this.deliveryAddressService.createShippingAddress({
       ...body,
       userId: currentUserPayload.userId,
     });
@@ -45,12 +45,12 @@ export class ShippingAddressController {
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async updateShippingAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-    @Body() body: UpdateShippingAddressDto,
-    @Param('id', ParseIntPipe) shippingAddressId: number,
-  ): Promise<ShippingAddress> {
-    return this.shippingAddressService.updateShippingAddress(
+    @Body() body: UpdateDeliveryAddressDto,
+    @Param('id', ParseIntPipe) deliveryAddressId: number,
+  ): Promise<DeliveryAddress> {
+    return this.deliveryAddressService.updateDeliveryAddress(
       currentUserPayload.userId,
-      shippingAddressId,
+      deliveryAddressId,
       body,
     );
   }
@@ -58,13 +58,13 @@ export class ShippingAddressController {
   @ApiOkResponse()
   @Delete('/:id')
   @UseInterceptors(CurrentUserPayloadInterceptor)
-  async deleteShippingAddress(
+  async deleteDeliveryAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-    @Param('id', ParseIntPipe) shippingAddressId: number,
+    @Param('id', ParseIntPipe) deliveryAddressId: number,
   ): Promise<void> {
-    return this.shippingAddressService.deleteShippingAddress(
+    return this.deliveryAddressService.deleteDeliveryAddress(
       currentUserPayload.userId,
-      shippingAddressId,
+      deliveryAddressId,
     );
   }
 
@@ -73,8 +73,8 @@ export class ShippingAddressController {
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async getDefaultShippingAddress(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-  ): Promise<ShippingAddress> {
-    return this.shippingAddressService.getDefaultShippingAddress(
+  ): Promise<DeliveryAddress> {
+    return this.deliveryAddressService.getDefaultShippingAddress(
       currentUserPayload.userId,
     );
   }
@@ -84,8 +84,8 @@ export class ShippingAddressController {
   @UseInterceptors(CurrentUserPayloadInterceptor)
   async getShippingAddresses(
     @CurrentUserPayload() currentUserPayload: UserPayload,
-  ): Promise<ShippingAddress[]> {
-    return this.shippingAddressService.getShippingAddresses(
+  ): Promise<DeliveryAddress[]> {
+    return this.deliveryAddressService.getShippingAddresses(
       currentUserPayload.userId,
     );
   }
