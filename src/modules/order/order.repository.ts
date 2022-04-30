@@ -21,7 +21,7 @@ export class OrderRepository extends Repository<Order> {
     const { page, pageSize, userId } = params;
 
     const query = this.createQueryBuilder('orders')
-      .select(['orders', 'user.id', 'user.fullName', 'user.email', ''])
+      .select(['orders', 'user.id', 'user.fullName', 'user.email'])
       .leftJoin('orders.user', 'user');
 
     if (userId) {
@@ -39,7 +39,7 @@ export class OrderRepository extends Repository<Order> {
 
   async getOrderDetails(orderId: string): Promise<Order | undefined> {
     return this.createQueryBuilder('orders')
-      .select(['orders', 'user.id', 'user.fullName'])
+      .select(['orders', 'user.id', 'user.fullName', 'user.email'])
       .leftJoin('orders.user', 'user')
       .leftJoinAndSelect('orders.products', 'products')
       .leftJoinAndSelect('products.product', 'orderProduct')

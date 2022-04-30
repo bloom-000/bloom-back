@@ -27,7 +27,7 @@ export class ProductService {
   ) {}
 
   async createProduct(
-    params: Omit<CreateProductParams, 'imageIds'> & {
+    params: Omit<CreateProductParams, 'imageIds' | 'primaryImagePath'> & {
       images: Omit<CreateProductImageParams, 'productId'>[];
     },
   ): Promise<Product> {
@@ -38,7 +38,10 @@ export class ProductService {
       );
     }
 
-    const product = await this.productRepository.createProduct(params);
+    const product = await this.productRepository.createProduct({
+      ...params,
+      primaryImagePath: basename(params.images[0].imagePath),
+    });
 
     product.images = await this.productImageService.createProductImages(
       params.images.map((e) => ({

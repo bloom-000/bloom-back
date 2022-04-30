@@ -8,6 +8,7 @@ export interface CreateProductParams {
   oldPrice?: number;
   stockQuantity: number;
   isPromotion: boolean;
+  primaryImagePath: string;
 }
 
 export type UpdateProductParams = Partial<CreateProductParams> & {

@@ -34,6 +34,9 @@ export class Product extends AbstractNumberPkEntity {
   @Column({ name: 'is_promotion' })
   isPromotion: boolean;
 
+  @Column({ name: 'primary_image_path' })
+  primaryImagePath: string;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
