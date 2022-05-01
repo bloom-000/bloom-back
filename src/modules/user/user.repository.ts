@@ -87,4 +87,10 @@ export class UserRepository extends Repository<User> {
       .where('users.id = :userId', { userId })
       .getOne();
   }
+
+  async getCountAfterDate(date: Date): Promise<number> {
+    return this.createQueryBuilder('users')
+      .where('users.createdAt >= :date', { date })
+      .getCount();
+  }
 }

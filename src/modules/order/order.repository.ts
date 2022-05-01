@@ -47,4 +47,10 @@ export class OrderRepository extends Repository<Order> {
       .where('orders.id = :orderId', { orderId })
       .getOne();
   }
+
+  async getOrdersAfterDate(date: Date): Promise<Order[]> {
+    return this.createQueryBuilder('orders')
+      .where('orders.createdAt >= :date', { date })
+      .getMany();
+  }
 }

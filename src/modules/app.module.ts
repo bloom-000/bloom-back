@@ -14,6 +14,8 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { DeliveryAddressModule } from './delivery-address/delivery-address.module';
 import { CreditCardModule } from './credit-card/credit-card.module';
 import { OrderModule } from './order/order.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { OrderModule } from './order/order.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'upload'),
     }),
+    ScheduleModule.forRoot(),
     AuthenticationModule,
     UserModule,
     CategoryModule,
@@ -30,6 +33,7 @@ import { OrderModule } from './order/order.module';
     DeliveryAddressModule,
     CreditCardModule,
     OrderModule,
+    StatisticsModule,
   ],
   providers: [
     {

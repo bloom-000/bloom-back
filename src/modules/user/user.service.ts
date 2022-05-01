@@ -5,6 +5,7 @@ import { ExceptionMessageCode } from '../../exception/exception-message-codes.en
 import { Permission } from '../../model/entity/permission.entity';
 import { CreateUserParams, GetUsersParams } from './user.interface';
 import { DataPage } from '../../model/common/data-page';
+import { DateUtils } from '../../common/util/date.utils';
 
 @Injectable()
 export class UserService {
@@ -62,5 +63,9 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async getRegisteredCountAfterMidnight(): Promise<number> {
+    return this.userRepository.getCountAfterDate(DateUtils.getMidnight());
   }
 }

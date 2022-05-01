@@ -12,6 +12,7 @@ import { Connection } from 'typeorm';
 import { DataPage } from '../../model/common/data-page';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { OrderStatus } from '../../model/enum/order-status.enum';
+import { DateUtils } from '../../common/util/date.utils';
 
 @Injectable()
 export class OrderService {
@@ -71,5 +72,9 @@ export class OrderService {
     }
 
     return order;
+  }
+
+  async getOrdersAfterMidnight(): Promise<Order[]> {
+    return this.orderRepository.getOrdersAfterDate(DateUtils.getMidnight());
   }
 }
