@@ -12,31 +12,6 @@ export class UserRepository extends Repository<User> {
       .getOne();
   }
 
-  async findByRefreshToken(refreshToken: string): Promise<User | undefined> {
-    return this.createQueryBuilder('users')
-      .where(':refreshToken = ANY(users.refreshTokens)', { refreshToken })
-      .getOne();
-  }
-
-  async updateRefreshTokens(
-    userId: string,
-    refreshTokens: string[],
-  ): Promise<void> {
-    await this.createQueryBuilder('users')
-      .update(User, { refreshTokens: refreshTokens })
-      .where('users.id = :userId', { userId })
-      .execute();
-  }
-
-  async getRefreshTokensFor(userId: string): Promise<string[] | undefined> {
-    const result = await this.createQueryBuilder('users')
-      .select('users.refreshTokens', 'refreshTokens')
-      .where('users.id = :userId', { userId })
-      .getRawOne();
-
-    return result?.refreshTokens;
-  }
-
   async getRolesForUser(userId: string): Promise<Role[] | undefined> {
     const result = await this.createQueryBuilder('users')
       .select('users.id')
@@ -92,5 +67,11 @@ export class UserRepository extends Repository<User> {
     return this.createQueryBuilder('users')
       .where('users.createdAt >= :date', { date })
       .getCount();
+  }
+
+  async findById(userId: string): Promise<User | undefined> {
+    return this.createQueryBuilder('users')
+      .where('users.id = :userId', { userId })
+      .getOne();
   }
 }

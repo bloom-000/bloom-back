@@ -45,7 +45,7 @@ export class AuthenticationService {
     const oldRefreshToken =
       this.authenticationCookieService.getRefreshToken(request);
     if (oldRefreshToken) {
-      await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
+      await this.userService.deleteRefreshToken(oldRefreshToken);
       this.authenticationCookieService.clearAuthenticationTokenCookies(
         response,
       );
@@ -54,7 +54,7 @@ export class AuthenticationService {
       this.jwtHelper.generateAuthenticationTokens({
         userId: user.id,
       });
-    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
     this.authenticationCookieService.persistAuthenticationTokenCookies(
       response,
       refreshToken,
@@ -84,13 +84,13 @@ export class AuthenticationService {
     }
 
     if (!(await this.jwtHelper.isRefreshTokenValid(oldRefreshToken))) {
-      await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
+      await this.userService.deleteRefreshToken(oldRefreshToken);
       throw new ForbiddenException(ExceptionMessageCode.INVALID_TOKEN);
     }
 
     const { accessToken, refreshToken } =
       this.jwtHelper.generateAuthenticationTokens({ userId: user.id });
-    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
     this.authenticationCookieService.persistAuthenticationTokenCookies(
       response,
       refreshToken,
@@ -112,7 +112,7 @@ export class AuthenticationService {
       return;
     }
 
-    await this.userService.removeRefreshTokenFor(user.id, oldRefreshToken);
+    await this.userService.deleteRefreshToken(oldRefreshToken);
     response.send();
   }
 
@@ -140,14 +140,13 @@ export class AuthenticationService {
     const user = await this.userService.createUser({
       ...params,
       password: hashedPassword,
-      refreshTokens: [],
     });
 
     const { accessToken, refreshToken } =
       this.jwtHelper.generateAuthenticationTokens({
         userId: user.id,
       });
-    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
 
     return { accessToken, refreshToken };
   }
@@ -176,7 +175,7 @@ export class AuthenticationService {
       this.jwtHelper.generateAuthenticationTokens({
         userId: user.id,
       });
-    await this.userService.addRefreshTokenTo(user.id, refreshToken);
+    await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
 
     return { accessToken, refreshToken };
   }
