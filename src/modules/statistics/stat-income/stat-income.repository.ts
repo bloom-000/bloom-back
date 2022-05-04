@@ -26,11 +26,11 @@ export class StatIncomeRepository extends Repository<StatIncome> {
   }
 
   async getStatsBetween(params: GetIncomeStatsParams): Promise<StatIncome[]> {
+    const { startDate, endDate } = params;
+
     return this.createQueryBuilder('statIncome')
-      .where('statIncome.createdAt >= :startDate', {
-        startDate: params.startDate,
-      })
-      .andWhere('statIncome.endDate <= :endDate', { endDate: params.endDate })
+      .where('statIncome.createdAt >= :startDate', { startDate })
+      .andWhere('statIncome.createdAt <= :endDate', { endDate })
       .getMany();
   }
 }

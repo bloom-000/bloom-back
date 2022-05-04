@@ -27,6 +27,6 @@ export class StatUsersRepository extends Repository<StatUsers> {
       .select('SUM(statUsers.count)', 'sum')
       .getRawOne();
 
-    return result?.sum ?? 0;
+    return Number(result?.sum);
   }
 }
