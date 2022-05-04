@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../user/user.service';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { PasswordEncoder } from './helper/password.encoder';
@@ -14,6 +16,10 @@ import {
   SignInParams,
   SignUpWithTokenParams,
 } from './authentication.interface';
+import { RandomGenerator } from '../../common/util/random.generator';
+import { RecoverPasswordCacheService } from './recover-password-cache/recover-password-cache.service';
+import { EmailService } from '../email/email.service';
+import { environment } from '../../environment';
 
 @Injectable()
 export class AuthenticationService {
@@ -22,10 +28,13 @@ export class AuthenticationService {
     private readonly passwordEncoder: PasswordEncoder,
     private readonly jwtHelper: JwtHelper,
     private readonly authenticationCookieService: AuthenticationCookieService,
+    private readonly randomGenerator: RandomGenerator,
+    private readonly recoverPasswordCacheService: RecoverPasswordCacheService,
+    private readonly emailService: EmailService,
   ) {}
 
   async signIn(params: SignInParams, request: Request, response: Response) {
-    const user = await this.userService.findByEmail(params.email);
+    const user = await this.userService.getUserByEmail(params.email);
     if (!user) {
       throw new UnauthorizedException(
         ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
@@ -155,7 +164,7 @@ export class AuthenticationService {
   async signInWithToken(
     params: SignInParams,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userService.findByEmail(params.email);
+    const user = await this.userService.getUserByEmail(params.email);
     if (!user) {
       throw new UnauthorizedException(
         ExceptionMessageCode.EMAIL_OR_PASSWORD_INVALID,
@@ -177,6 +186,88 @@ export class AuthenticationService {
         userId: user.id,
       });
     await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
+  }
+
+  async requestRecoverPassword({ email }: { email: string }): Promise<void> {
+    if (!(await this.userService.userExistsByEmail(email))) {
+      return;
+    }
+
+    const code = await this.randomGenerator.generateRandomIntAsString(
+      10000,
+      99999,
+    );
+
+    await this.recoverPasswordCacheService.createRecoverPasswordCache({
+      email,
+      isConfirmed: false,
+      code,
+    });
+
+    await this.emailService.sendRequestRecoverPasswordEmail(
+      environment.isDebug ? environment.debugEmail : email,
+      code,
+    );
+  }
+
+  async recoverPasswordConfirmCode({
+    email,
+    code,
+  }: {
+    email: string;
+    code: string;
+  }): Promise<{ uuid: string }> {
+    const recoverPasswordCache =
+      await this.recoverPasswordCacheService.getRecoverPasswordCacheByEmail(
+        email,
+      );
+
+    await this.recoverPasswordCacheService.validateRecoverPasswordCacheExpiration(
+      recoverPasswordCache,
+    );
+
+    if (recoverPasswordCache.code !== code) {
+      throw new BadRequestException(ExceptionMessageCode.INVALID_CODE);
+    }
+
+    const uuid = uuidv4();
+
+    await this.recoverPasswordCacheService.updateRecoverPasswordCache(
+      recoverPasswordCache.id,
+      { uuid, isConfirmed: true },
+    );
+
+    return { uuid };
+  }
+
+  async recoverPassword({
+    newPassword,
+    uuid,
+  }: {
+    newPassword: string;
+    uuid: string;
+  }): Promise<{ accessToken: string; refreshToken: string }> {
+    const recoverPasswordCache =
+      await this.recoverPasswordCacheService.getRecoverPasswordCacheByUUID(
+        uuid,
+      );
+
+    const userId = await this.userService.getUserIdByEmail(
+      recoverPasswordCache.email,
+    );
+
+    const hashResult = await this.passwordEncoder.encode(newPassword);
+    await this.userService.updateUserPassword(userId, hashResult);
+
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({ userId });
+    await this.userService.addRefreshTokenByUserId(userId, refreshToken);
+
+    await this.recoverPasswordCacheService.deleteRecoverPasswordCacheById(
+      recoverPasswordCache.id,
+    );
 
     return { accessToken, refreshToken };
   }

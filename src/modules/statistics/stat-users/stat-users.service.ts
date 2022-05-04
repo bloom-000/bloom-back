@@ -4,7 +4,7 @@ import { StatUsers } from '../../../model/entity/stat-users.entity';
 import { CreateStatUsersParams } from './stat-users.interface';
 import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
 import { DateUtils } from '../../../common/util/date.utils';
-import { DurationConstants } from '../../../common/durationConstants';
+import { DurationConstants } from '../../../common/duration.constants';
 
 @Injectable()
 export class StatUsersService {

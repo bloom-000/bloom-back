@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { CookieOptions } from 'express-serve-static-core';
+import { DurationConstants } from '../../common/duration.constants';
 
 @Injectable()
 export class AuthenticationCookieService {
@@ -23,7 +24,7 @@ export class AuthenticationCookieService {
   ) {
     const options: CookieOptions = {
       httpOnly: true,
-      expires: new Date(new Date().getTime() + 86409000), // never
+      expires: new Date(Date.now() + DurationConstants.MILLIS_IN_YEAR),
     };
 
     response.cookie(

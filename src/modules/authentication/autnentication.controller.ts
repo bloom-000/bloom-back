@@ -15,6 +15,9 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { NoAuth } from '../../decorator/no-auth.decorator';
 import { SignUpDto } from '../../model/dto/authentication/sign-up.dto';
 import { AuthenticationPayloadDto } from '../../model/dto/authentication/authentication-payload.dto';
+import { RequestRecoverPasswordDto } from '../../model/dto/authentication/request-recover-password.dto';
+import { RecoverPasswordConfirmCodeDto } from '../../model/dto/authentication/recover-password-confirm-code.dto';
+import { RecoverPasswordDto } from '../../model/dto/authentication/recover-password.dto';
 
 @ApiTags('authentication')
 @Controller('/authentication')
@@ -71,5 +74,28 @@ export class AuthenticationController {
   @Post('/sign-in')
   async signIn(@Body() body: SignInDto): Promise<AuthenticationPayloadDto> {
     return this.authenticationService.signInWithToken(body);
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/request-recover-password')
+  async requestRecoverPassword(@Body() body: RequestRecoverPasswordDto) {
+    return this.authenticationService.requestRecoverPassword(body);
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/recover-password-confirm-code')
+  async recoverPasswordConfirmCode(
+    @Body() body: RecoverPasswordConfirmCodeDto,
+  ) {
+    return this.authenticationService.recoverPasswordConfirmCode(body);
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/recover-password')
+  async recoverPassword(@Body() body: RecoverPasswordDto) {
+    return this.authenticationService.recoverPassword(body);
   }
 }

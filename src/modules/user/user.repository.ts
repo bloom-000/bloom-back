@@ -6,7 +6,7 @@ import { CreateUserParams, GetUsersParams } from './user.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  async findByEmail(email: string): Promise<User | undefined> {
+  async getByEmail(email: string): Promise<User | undefined> {
     return this.createQueryBuilder('users')
       .where('users.email = :email', { email })
       .getOne();
@@ -73,5 +73,21 @@ export class UserRepository extends Repository<User> {
     return this.createQueryBuilder('users')
       .where('users.id = :userId', { userId })
       .getOne();
+  }
+
+  async getIdByEmail(email: string): Promise<string> {
+    const result = await this.createQueryBuilder('users')
+      .select('users.id', 'id')
+      .where('users.email = :email', { email })
+      .getRawOne();
+
+    return result?.id;
+  }
+
+  async updatePasswordById(userId: string, password: string): Promise<void> {
+    await this.createQueryBuilder()
+      .update(User, { password })
+      .where('id = :userId', { userId })
+      .execute();
   }
 }

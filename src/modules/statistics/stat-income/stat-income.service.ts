@@ -7,7 +7,7 @@ import {
 import { StatIncome } from '../../../model/entity/stat-income.entity';
 import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
 import { DateUtils } from '../../../common/util/date.utils';
-import { DurationConstants } from '../../../common/durationConstants';
+import { DurationConstants } from '../../../common/duration.constants';
 
 @Injectable()
 export class StatIncomeService {

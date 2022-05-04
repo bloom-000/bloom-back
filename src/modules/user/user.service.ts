@@ -15,8 +15,8 @@ export class UserService {
     private readonly refreshTokenRepository: RefreshTokenRepository,
   ) {}
 
-  async findByEmail(email: string): Promise<User | undefined> {
-    return this.userRepository.findByEmail(email);
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.getByEmail(email);
   }
 
   async findByRefreshToken(refreshToken: string): Promise<User | undefined> {
@@ -77,5 +77,13 @@ export class UserService {
 
   async getRegisteredCountAfterMidnight(): Promise<number> {
     return this.userRepository.getCountAfterDate(DateUtils.getMidnight());
+  }
+
+  async getUserIdByEmail(email: string): Promise<string> {
+    return this.userRepository.getIdByEmail(email);
+  }
+
+  async updateUserPassword(userId: string, password: string): Promise<void> {
+    return this.userRepository.updatePasswordById(userId, password);
   }
 }
