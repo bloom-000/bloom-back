@@ -5,4 +5,7 @@ import { Column, Entity } from 'typeorm';
 export class StatIncome extends AbstractNumberPkEntity {
   @Column({ name: 'amount', type: 'real' })
   amount: number;
+
+  @Column({ name: 'order_count', nullable: true })
+  orderCount: number | undefined;
 }

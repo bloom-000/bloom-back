@@ -21,6 +21,7 @@ export class StatIncomeScheduler {
 
     await this.statIncomeService.createStatIncome({
       amount: amountAccumulated,
+      orderCount: orders.length,
     });
   }
 }
