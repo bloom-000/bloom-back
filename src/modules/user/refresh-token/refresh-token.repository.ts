@@ -20,19 +20,19 @@ export class RefreshTokenRepository extends Repository<RefreshToken> {
       .where('refreshTokens.refreshToken = :refreshToken', { refreshToken })
       .getRawOne();
 
-    return result?.refreshToken;
+    return result?.userId;
   }
 
   async deleteAllByUserId(userId: string): Promise<void> {
-    await this.createQueryBuilder('refreshTokens')
-      .where('refreshTokens.userId = :userId', { userId })
+    await this.createQueryBuilder()
+      .where('userId = :userId', { userId })
       .delete()
       .execute();
   }
 
   async deleteByRefreshToken(refreshToken: string): Promise<void> {
-    await this.createQueryBuilder('refreshTokens')
-      .where('refreshTokens.refreshToken = :refreshToken', { refreshToken })
+    await this.createQueryBuilder()
+      .where('refreshToken = :refreshToken', { refreshToken })
       .delete()
       .execute();
   }

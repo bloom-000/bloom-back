@@ -90,6 +90,7 @@ export class AuthenticationService {
 
     const { accessToken, refreshToken } =
       this.jwtHelper.generateAuthenticationTokens({ userId: user.id });
+    await this.userService.deleteRefreshToken(oldRefreshToken);
     await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
     this.authenticationCookieService.persistAuthenticationTokenCookies(
       response,
