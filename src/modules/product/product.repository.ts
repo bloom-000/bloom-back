@@ -6,6 +6,7 @@ import {
   UpdateProductParams,
 } from './product.interface';
 import { DataPage } from '../../model/common/data-page';
+import { ProductSortOption } from '../../model/enum/product-sort-option.enum';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -48,9 +49,18 @@ export class ProductRepository extends Repository<Product> {
   }
 
   async getProducts(params: GetProductParams): Promise<DataPage<Product>> {
-    const { page, pageSize } = params;
+    const {
+      page,
+      pageSize,
+      categoryIds,
+      fromPrice,
+      toPrice,
+      sortOptions,
+      ratings,
+      searchKeyword,
+    } = params;
 
-    const [data, total] = await this.createQueryBuilder('products')
+    const query = this.createQueryBuilder('products')
       .select([
         'products.createdAt',
         'products.updatedAt',
@@ -70,8 +80,60 @@ export class ProductRepository extends Repository<Product> {
         'categories',
       ])
       .leftJoin('products.images', 'images')
-      .leftJoin('products.category', 'categories')
-      .orderBy('products.createdAt', 'DESC')
+      .leftJoin('products.category', 'categories');
+
+    if (categoryIds) {
+      query.andWhere('categories.id IN (:...categoryIds)', { categoryIds });
+    }
+    if (fromPrice) {
+      query.andWhere('products.price >= :fromPrice', { fromPrice });
+    }
+    if (toPrice) {
+      query.andWhere('products.price < :toPrice', { toPrice });
+    }
+    if (ratings) {
+      query.andWhere('ROUND(product.rating) IN (:...ratings)', { ratings });
+    }
+    if (searchKeyword) {
+      query.andWhere('products.name LIKE :searchKeyword', {
+        searchKeyword: `%${searchKeyword}%`,
+      });
+    }
+    if (sortOptions) {
+      for (const option of sortOptions) {
+        switch (option) {
+          case ProductSortOption.PRICE_LOW_TO_HIGH:
+            query.orderBy('products.price', 'ASC');
+            break;
+          case ProductSortOption.PRICE_HIGH_TO_LOW:
+            query.orderBy('products.price', 'DESC');
+            break;
+          case ProductSortOption.NAME_A_TO_Z:
+            query.orderBy('products.name', 'ASC');
+            break;
+          case ProductSortOption.NAME_Z_TO_A:
+            query.orderBy('products.name', 'DESC');
+            break;
+          case ProductSortOption.CREATION_DATE_HIGH_TO_LOW:
+            query.orderBy('products.createdAt', 'DESC');
+            break;
+          case ProductSortOption.CREATION_DATE_LOW_TO_HIGH:
+            query.orderBy('products.createdAt', 'ASC');
+            break;
+        }
+
+        if (
+          !sortOptions.includes(ProductSortOption.CREATION_DATE_LOW_TO_HIGH) &&
+          !sortOptions.includes(ProductSortOption.CREATION_DATE_HIGH_TO_LOW)
+        ) {
+          query.orderBy('products.createdAt', 'DESC');
+        }
+      }
+    } else {
+      query.orderBy('products.createdAt', 'DESC');
+    }
+
+    const [data, total] = await query
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();

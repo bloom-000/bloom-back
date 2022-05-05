@@ -101,7 +101,6 @@ export class ProductController {
 
   @ApiOkResponse()
   @Get()
-  @Permissions(ActionProduct.READ_FILTER)
   async getProducts(
     @Query() query: GetProductsDto,
   ): Promise<DataPageDto<Product>> {

@@ -37,6 +37,9 @@ export class Product extends AbstractNumberPkEntity {
   @Column({ name: 'primary_image_path' })
   primaryImagePath: string;
 
+  @Column({ name: 'rating', type: 'real' })
+  rating: number;
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category;
