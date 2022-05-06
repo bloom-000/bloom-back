@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, Min } from '@nestjs/class-validator';
+import { IsInt, Min } from '@nestjs/class-validator';
 import { Type } from 'class-transformer';
 
 export class PageOptionsDto {
   @ApiProperty({ default: 1 })
-  @IsNumber()
-  @Min(1)
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   page: number;
 
   @ApiProperty({ default: 15 })
-  @IsNumber()
-  @Min(1)
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   pageSize: number;
 }

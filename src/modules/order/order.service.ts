@@ -13,6 +13,7 @@ import { DataPage } from '../../model/common/data-page';
 import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 import { OrderStatus } from '../../model/enum/order-status.enum';
 import { DateUtils } from '../../common/util/date.utils';
+import { CartProductService } from '../cart-product/cart-product.service';
 
 @Injectable()
 export class OrderService {
@@ -23,6 +24,7 @@ export class OrderService {
     private readonly creditCardService: CreditCardService,
     private readonly productService: ProductService,
     private readonly connection: Connection,
+    private readonly cartProductService: CartProductService,
   ) {}
 
   async createOrder(
@@ -55,6 +57,11 @@ export class OrderService {
           orderId: order.id,
         })),
         qr,
+      );
+
+      await this.cartProductService.deleteCartProductsByProductIds(
+        params.userId,
+        orderProductParams.map((e) => e.productId),
       );
 
       return order;

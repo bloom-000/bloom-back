@@ -8,6 +8,7 @@ import { DeliveryAddressModule } from '../delivery-address/delivery-address.modu
 import { CreditCardModule } from '../credit-card/credit-card.module';
 import { ProductModule } from '../product/product.module';
 import { CurrentUserPayloadInterceptorModule } from '../../decorator/current-user-payload.decorator';
+import { CartProductModule } from '../cart-product/cart-product.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CurrentUserPayloadInterceptorModule } from '../../decorator/current-use
     CreditCardModule,
     ProductModule,
     CurrentUserPayloadInterceptorModule,
+    CartProductModule,
   ],
   providers: [OrderService],
   controllers: [OrderController],
