@@ -153,4 +153,8 @@ export class ProductService {
   async getPromotedProducts(): Promise<Product[]> {
     return this.productRepository.getPromoted();
   }
+
+  async getProductStockQuantityById(productId: string): Promise<number> {
+    return this.productRepository.getStockQuantityById(productId);
+  }
 }

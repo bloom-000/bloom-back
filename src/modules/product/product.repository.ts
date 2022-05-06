@@ -179,4 +179,13 @@ export class ProductRepository extends Repository<Product> {
       .where('products.isPromotion = true')
       .getMany();
   }
+
+  async getStockQuantityById(productId: string): Promise<number> {
+    const result = await this.createQueryBuilder('products')
+      .select('products.stockQuantity', 'stockQuantity')
+      .where('products.id = :productId', { productId })
+      .getRawOne();
+
+    return result?.stockQuantity;
+  }
 }

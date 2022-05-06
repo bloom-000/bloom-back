@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CartProductRepository } from './cart-product.repository';
 import {
   CreateCartProductParams,
@@ -6,12 +6,25 @@ import {
 } from './cart-product.interface';
 import { DataPage } from '../../model/common/data-page';
 import { CartProduct } from '../../model/entity/cart-product.entity';
+import { ProductService } from '../product/product.service';
+import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
 
 @Injectable()
 export class CartProductService {
-  constructor(private readonly cartProductRepository: CartProductRepository) {}
+  constructor(
+    private readonly cartProductRepository: CartProductRepository,
+    private readonly productService: ProductService,
+  ) {}
 
   async upsertCartProduct(params: CreateCartProductParams): Promise<void> {
+    const productStockQuantity =
+      await this.productService.getProductStockQuantityById(params.productId);
+    if (productStockQuantity < params.quantity) {
+      throw new BadRequestException(
+        ExceptionMessageCode.INSUFFICIENT_STOCK_QUANTITY,
+      );
+    }
+
     const cartProductId =
       await this.cartProductRepository.getIdByUserIdAndProductId(params);
     if (cartProductId) {
