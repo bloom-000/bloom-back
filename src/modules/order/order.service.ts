@@ -10,7 +10,7 @@ import { ProductService } from '../product/product.service';
 import { runTransaction } from '../../common/transaction';
 import { Connection } from 'typeorm';
 import { DataPage } from '../../model/common/data-page';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { OrderStatus } from '../../model/enum/order-status.enum';
 import { DateUtils } from '../../common/util/date.utils';
 import { CartProductService } from '../cart-product/cart-product.service';

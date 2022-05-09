@@ -17,7 +17,7 @@ import { Permissions } from '../../decorator/permissions.decorator';
 import { Product } from '../../model/entity/product.entity';
 import { CreateProductDto } from '../../model/dto/product/create-product.dto';
 import { CreateProductImageParams } from './product-image/product-image.interface';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { UpdateProductDto } from '../../model/dto/product/update-product.dto';
 import { GetProductsDto } from '../../model/dto/product/get-products.dto';
 import { DataPageDto } from '../../model/dto/common/data-page.dto';

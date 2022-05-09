@@ -10,7 +10,7 @@ import {
 } from './recover-password-cache.interface';
 import { RecoverPasswordCache } from '../../../model/entity/recover-password-cache.entity';
 import { environment } from '../../../environment';
-import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../../common/exception-message-code.enum';
 
 @Injectable()
 export class RecoverPasswordCacheService {

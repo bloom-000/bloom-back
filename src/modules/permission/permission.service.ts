@@ -6,7 +6,7 @@ import {
 import { CreatePermissionParams } from './permission.interface';
 import { Permission } from '../../model/entity/permission.entity';
 import { PermissionRepository } from './permission.repository';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 
 @Injectable()
 export class PermissionService {

@@ -3,11 +3,12 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../user/user.service';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { PasswordEncoder } from './helper/password.encoder';
 import { JwtHelper } from './helper/jwt.helper';
 import { Request, Response } from 'express';
@@ -192,7 +193,7 @@ export class AuthenticationService {
 
   async requestRecoverPassword({ email }: { email: string }): Promise<void> {
     if (!(await this.userService.userExistsByEmail(email))) {
-      return;
+      throw new NotFoundException(ExceptionMessageCode.USER_NOT_FOUND);
     }
 
     const code = await this.randomGenerator.generateRandomIntAsString(

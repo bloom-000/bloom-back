@@ -5,7 +5,7 @@ import {
   GetIncomeStatsParams,
 } from './stat-income.interface';
 import { StatIncome } from '../../../model/entity/stat-income.entity';
-import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../../common/exception-message-code.enum';
 import { DateUtils } from '../../../common/util/date.utils';
 import { DurationConstants } from '../../../common/duration.constants';
 

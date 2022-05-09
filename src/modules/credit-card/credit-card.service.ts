@@ -9,7 +9,7 @@ import {
 } from './credit-card.interface';
 import { CreditCard } from '../../model/entity/credit-card.entity';
 import { CreditCardRepository } from './credit-card.repository';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 
 @Injectable()
 export class CreditCardService {

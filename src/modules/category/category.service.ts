@@ -10,7 +10,7 @@ import {
   GetCategoriesParams,
   UpdateCategoryParams,
 } from './category.interface';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { DataPage } from '../../model/common/data-page';
 
 @Injectable()

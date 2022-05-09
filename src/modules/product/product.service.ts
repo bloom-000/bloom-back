@@ -14,7 +14,7 @@ import { Product } from '../../model/entity/product.entity';
 import { CreateProductImageParams } from './product-image/product-image.interface';
 import { ProductImageService } from './product-image/product-image.service';
 import { CategoryService } from '../category/category.service';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { DataPage } from '../../model/common/data-page';
 import { basename } from 'path';
 

@@ -7,7 +7,7 @@ import {
 import { DataPage } from '../../model/common/data-page';
 import { CartProduct } from '../../model/entity/cart-product.entity';
 import { ProductService } from '../product/product.service';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 
 @Injectable()
 export class CartProductService {

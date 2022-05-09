@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { environment } from '../../../environment';
 import { JwtPayload, UserPayload } from '../../../model/common/user.payload';
-import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../../common/exception-message-code.enum';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()

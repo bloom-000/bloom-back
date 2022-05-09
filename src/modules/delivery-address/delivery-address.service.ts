@@ -9,7 +9,7 @@ import {
   UpdateDeliveryAddressParams,
 } from './delivery-address.interface';
 import { DeliveryAddress } from '../../model/entity/delivery-address.entity';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 
 @Injectable()
 export class DeliveryAddressService {

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { StatUsersRepository } from './stat-users.repository';
 import { StatUsers } from '../../../model/entity/stat-users.entity';
 import { CreateStatUsersParams } from './stat-users.interface';
-import { ExceptionMessageCode } from '../../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../../common/exception-message-code.enum';
 import { DateUtils } from '../../../common/util/date.utils';
 import { DurationConstants } from '../../../common/duration.constants';
 

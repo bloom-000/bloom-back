@@ -10,7 +10,7 @@ import {
   UpdateRoleParams,
 } from './role.interface';
 import { Role } from '../../model/entity/role.entity';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { DataPage } from '../../model/common/data-page';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from '../../model/entity/user.entity';
-import { ExceptionMessageCode } from '../../exception/exception-message-codes.enum';
+import { ExceptionMessageCode } from '../../common/exception-message-code.enum';
 import { Permission } from '../../model/entity/permission.entity';
 import { CreateUserParams, GetUsersParams } from './user.interface';
 import { DataPage } from '../../model/common/data-page';
