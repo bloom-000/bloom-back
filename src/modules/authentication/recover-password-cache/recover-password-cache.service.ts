@@ -86,4 +86,8 @@ export class RecoverPasswordCacheService {
   async deleteRecoverPasswordCacheById(id: string): Promise<void> {
     await this.recoverPasswordCacheRepository.deleteById(id);
   }
+
+  async updateRecoverPasswordCodeById(id: string, code: string): Promise<void> {
+    await this.recoverPasswordCacheRepository.updateCodeById(id, code);
+  }
 }

@@ -56,4 +56,11 @@ export class RecoverPasswordCacheRepository extends Repository<RecoverPasswordCa
 
     return !!result.affected;
   }
+
+  async updateCodeById(id: string, code: string): Promise<void> {
+    await this.createQueryBuilder()
+      .update(RecoverPasswordCache, { code })
+      .where('id = :id', { id })
+      .execute();
+  }
 }

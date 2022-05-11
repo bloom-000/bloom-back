@@ -18,6 +18,7 @@ import { AuthenticationPayloadDto } from '../../model/dto/authentication/authent
 import { RequestRecoverPasswordDto } from '../../model/dto/authentication/request-recover-password.dto';
 import { RecoverPasswordConfirmCodeDto } from '../../model/dto/authentication/recover-password-confirm-code.dto';
 import { RecoverPasswordDto } from '../../model/dto/authentication/recover-password.dto';
+import { RecoverPasswordSendVerificationCodeDto } from '../../model/dto/authentication/recover-password-send-verification-code.dto';
 
 @ApiTags('authentication')
 @Controller('/authentication')
@@ -78,18 +79,29 @@ export class AuthenticationController {
 
   @ApiOkResponse()
   @HttpCode(HttpStatus.OK)
-  @Post('/request-recover-password')
+  @Post('/recover-password/request')
   async requestRecoverPassword(@Body() body: RequestRecoverPasswordDto) {
     return this.authenticationService.requestRecoverPassword(body);
   }
 
   @ApiOkResponse()
   @HttpCode(HttpStatus.OK)
-  @Post('/recover-password-confirm-code')
+  @Post('/recover-password/confirm-code')
   async recoverPasswordConfirmCode(
     @Body() body: RecoverPasswordConfirmCodeDto,
   ) {
     return this.authenticationService.recoverPasswordConfirmCode(body);
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/recover-password/send-verification-code')
+  async recoverPasswordSendVerificationCode(
+    @Body() body: RecoverPasswordSendVerificationCodeDto,
+  ): Promise<void> {
+    return this.authenticationService.recoverPasswordSendVerificationCode(
+      body.email,
+    );
   }
 
   @ApiOkResponse()

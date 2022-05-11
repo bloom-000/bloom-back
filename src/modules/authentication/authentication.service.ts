@@ -272,4 +272,32 @@ export class AuthenticationService {
 
     return { accessToken, refreshToken };
   }
+
+  async recoverPasswordSendVerificationCode(email: string): Promise<void> {
+    const recoverPasswordCache =
+      await this.recoverPasswordCacheService.getRecoverPasswordCacheByEmail(
+        email,
+      );
+    if (!recoverPasswordCache) {
+      throw new NotFoundException(
+        ExceptionMessageCode.RECOVER_PASSWORD_CACHE_NOT_FOUND,
+      );
+    }
+
+    await this.recoverPasswordCacheService.validateRecoverPasswordCacheExpiration(
+      recoverPasswordCache,
+    );
+
+    const code = await this.randomGenerator.generateRandomIntAsString(
+      10000,
+      99999,
+    );
+
+    await this.recoverPasswordCacheService.updateRecoverPasswordCodeById(
+      recoverPasswordCache.id,
+      code,
+    );
+
+    await this.emailService.sendRequestRecoverPasswordEmail(email, code);
+  }
 }
