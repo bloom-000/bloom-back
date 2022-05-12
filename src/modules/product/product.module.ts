@@ -4,13 +4,11 @@ import { ProductRepository } from './product.repository';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { ProductImageModule } from './product-image/product-image.module';
-import { CookieStrategyModule } from '../authentication/modules/cookie-strategy.module';
 import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductRepository]),
-    CookieStrategyModule,
     ProductImageModule,
     CategoryModule,
   ],

@@ -175,6 +175,7 @@ export class ProductRepository extends Repository<Product> {
   }
 
   async getPromoted(): Promise<Product[]> {
+    console.log('called');
     return this.createQueryBuilder('products')
       .where('products.isPromotion = true')
       .getMany();

@@ -5,7 +5,7 @@ config();
 const env = process.env;
 
 export const environment = {
-  isDebug: env.ENVIRONMENT === 'production',
+  isDebug: env.ENVIRONMENT === 'debug',
   port: parseInt(env.PORT || '3000'),
   accessTokenSecret: env.ACCESS_TOKEN_SECRET,
   accessTokenExpiration: Number(env.ACCESS_TOKEN_EXPIRATION),

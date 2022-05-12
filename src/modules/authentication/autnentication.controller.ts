@@ -19,6 +19,7 @@ import { RequestRecoverPasswordDto } from '../../model/dto/authentication/reques
 import { RecoverPasswordConfirmCodeDto } from '../../model/dto/authentication/recover-password-confirm-code.dto';
 import { RecoverPasswordDto } from '../../model/dto/authentication/recover-password.dto';
 import { RecoverPasswordSendVerificationCodeDto } from '../../model/dto/authentication/recover-password-send-verification-code.dto';
+import { RefreshTokenDto } from '../../model/dto/authentication/refresh-token.dto';
 
 @ApiTags('authentication')
 @Controller('/authentication')
@@ -48,7 +49,7 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @Post('/admin/refresh')
   async adminRefresh(@Req() request: Request, @Res() response: Response) {
-    return this.authenticationService.refreshToken(request, response);
+    return this.authenticationService.refreshTokenFromCookie(request, response);
   }
 
   @ApiOkResponse()
@@ -75,6 +76,15 @@ export class AuthenticationController {
   @Post('/sign-in')
   async signIn(@Body() body: SignInDto): Promise<AuthenticationPayloadDto> {
     return this.authenticationService.signInWithToken(body);
+  }
+
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/refresh')
+  async refresh(
+    @Body() body: RefreshTokenDto,
+  ): Promise<AuthenticationPayloadDto> {
+    return this.authenticationService.refreshToken(body.refreshToken);
   }
 
   @ApiOkResponse()

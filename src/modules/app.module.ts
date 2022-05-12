@@ -29,7 +29,9 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
     MailerModule.forRoot({
       transport: {
         host: environment.emailHost,
-        secure: false,
+        secure: true,
+        logger: true,
+        pool: true,
         auth: {
           user: environment.emailUser,
           pass: environment.emailPassword,

@@ -42,20 +42,41 @@ export class JwtHelper {
     return false;
   }
 
-  async validateRefreshToken(token: string): Promise<boolean> {
-    if (!token) {
+  async validateRefreshToken(refreshToken: string): Promise<boolean> {
+    if (!refreshToken) {
       throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
     }
 
-    await jwt.verify(
-      token,
+    jwt.verify(
+      refreshToken,
       environment.refreshTokenSecret,
-      async (err: jwt.VerifyErrors) => {
+      (err: jwt.VerifyErrors) => {
         if (err instanceof jwt.TokenExpiredError) {
           throw new UnauthorizedException(ExceptionMessageCode.EXPIRED_TOKEN);
         }
 
-        if (err instanceof jwt.JsonWebTokenError) {
+        if (err) {
+          throw new UnauthorizedException(ExceptionMessageCode.INVALID_TOKEN);
+        }
+      },
+    );
+
+    return true;
+  }
+
+  async validateAccessToken(accessToken: string): Promise<boolean> {
+    if (!accessToken) {
+      throw new UnauthorizedException(ExceptionMessageCode.MISSING_TOKEN);
+    }
+
+    jwt.verify(
+      accessToken,
+      environment.accessTokenSecret,
+      (err: jwt.VerifyErrors) => {
+        if (err instanceof jwt.TokenExpiredError) {
+          throw new UnauthorizedException(ExceptionMessageCode.EXPIRED_TOKEN);
+        }
+        if (err) {
           throw new UnauthorizedException(ExceptionMessageCode.INVALID_TOKEN);
         }
       },

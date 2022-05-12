@@ -73,7 +73,7 @@ export class AuthenticationService {
     response.send();
   }
 
-  async refreshToken(request: Request, response: Response) {
+  async refreshTokenFromCookie(request: Request, response: Response) {
     const oldRefreshToken =
       this.authenticationCookieService.getRefreshToken(request);
     if (!oldRefreshToken) {
@@ -85,6 +85,7 @@ export class AuthenticationService {
     this.authenticationCookieService.clearAuthenticationTokenCookies(response);
 
     const user = await this.userService.findByRefreshToken(oldRefreshToken);
+    // noinspection DuplicatedCode
     if (!user) {
       const decodedPayload = await this.jwtHelper.getUserPayload(
         oldRefreshToken,
@@ -191,6 +192,32 @@ export class AuthenticationService {
     return { accessToken, refreshToken };
   }
 
+  async refreshToken(
+    oldRefreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    // noinspection DuplicatedCode
+    const user = await this.userService.findByRefreshToken(oldRefreshToken);
+    if (!user) {
+      const decodedPayload = await this.jwtHelper.getUserPayload(
+        oldRefreshToken,
+      );
+      await this.userService.clearRefreshTokensForUser(decodedPayload.userId);
+      throw new ForbiddenException(ExceptionMessageCode.REFRESH_TOKEN_REUSE);
+    }
+
+    if (!(await this.jwtHelper.isRefreshTokenValid(oldRefreshToken))) {
+      await this.userService.deleteRefreshToken(oldRefreshToken);
+      throw new ForbiddenException(ExceptionMessageCode.INVALID_TOKEN);
+    }
+
+    const { accessToken, refreshToken } =
+      this.jwtHelper.generateAuthenticationTokens({ userId: user.id });
+    await this.userService.deleteRefreshToken(oldRefreshToken);
+    await this.userService.addRefreshTokenByUserId(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
+  }
+
   async requestRecoverPassword({ email }: { email: string }): Promise<void> {
     if (!(await this.userService.userExistsByEmail(email))) {
       throw new NotFoundException(ExceptionMessageCode.USER_NOT_FOUND);
@@ -278,11 +305,6 @@ export class AuthenticationService {
       await this.recoverPasswordCacheService.getRecoverPasswordCacheByEmail(
         email,
       );
-    if (!recoverPasswordCache) {
-      throw new NotFoundException(
-        ExceptionMessageCode.RECOVER_PASSWORD_CACHE_NOT_FOUND,
-      );
-    }
 
     await this.recoverPasswordCacheService.validateRecoverPasswordCacheExpiration(
       recoverPasswordCache,

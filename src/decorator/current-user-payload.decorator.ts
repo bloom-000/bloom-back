@@ -13,7 +13,6 @@ import { UserPayload } from '../model/common/user.payload';
 import { ExceptionMessageCode } from '../common/exception-message-code.enum';
 import { AuthenticationCookieService } from '../modules/authentication/authentication-cookie.service';
 import { JwtModule } from '@nestjs/jwt';
-import { environment } from '../environment';
 
 export const CurrentUserPayload = createParamDecorator(
   (data: never, context: ExecutionContext) => {
@@ -62,12 +61,7 @@ export class CurrentUserPayloadInterceptor implements NestInterceptor {
 }
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: environment.accessTokenSecret,
-      signOptions: { expiresIn: environment.accessTokenExpiration },
-    }),
-  ],
+  imports: [JwtModule.register({})],
   providers: [AuthenticationCookieService, JwtHelper],
   exports: [JwtHelper, AuthenticationCookieService],
 })

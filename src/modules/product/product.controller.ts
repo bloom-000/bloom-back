@@ -108,15 +108,14 @@ export class ProductController {
   }
 
   @ApiOkResponse()
-  @Get('/:id')
-  @Permissions(ActionProduct.READ_BY_ID)
-  async getProduct(@Param('id') id: string): Promise<Product> {
-    return this.productService.getProductById(id);
-  }
-
-  @ApiOkResponse()
   @Get('/promoted')
   async getPromotedProducts(): Promise<Product[]> {
     return this.productService.getPromotedProducts();
+  }
+
+  @ApiOkResponse()
+  @Get('/:id')
+  async getProduct(@Param('id') id: string): Promise<Product> {
+    return this.productService.getProductById(id);
   }
 }
