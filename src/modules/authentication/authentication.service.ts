@@ -201,6 +201,9 @@ export class AuthenticationService {
       const decodedPayload = await this.jwtHelper.getUserPayload(
         oldRefreshToken,
       );
+      if (!decodedPayload) {
+        return;
+      }
       await this.userService.clearRefreshTokensForUser(decodedPayload.userId);
       throw new ForbiddenException(ExceptionMessageCode.REFRESH_TOKEN_REUSE);
     }

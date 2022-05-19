@@ -17,6 +17,8 @@ export class CartProductService {
   ) {}
 
   async upsertCartProduct(params: CreateCartProductParams): Promise<void> {
+    await this.productService.validateProductById(params.productId);
+
     const productStockQuantity =
       await this.productService.getProductStockQuantityById(params.productId);
     if (productStockQuantity < params.quantity) {
@@ -27,21 +29,19 @@ export class CartProductService {
 
     const cartProductId =
       await this.cartProductRepository.getIdByUserIdAndProductId(params);
-    if (cartProductId) {
-      if (params.quantity === 0) {
-        await this.cartProductRepository.deleteById(cartProductId);
-        return;
-      }
+    if (cartProductId && params.quantity === 0) {
+      await this.cartProductRepository.deleteById(cartProductId);
+      return;
+    }
 
+    if (cartProductId) {
       await this.cartProductRepository.updateCartProduct(cartProductId, params);
       return;
     }
 
-    if (params.quantity === 0) {
-      return;
+    if (params.quantity !== 0) {
+      await this.cartProductRepository.createCartProduct(params);
     }
-
-    await this.cartProductRepository.createCartProduct(params);
   }
 
   async deleteCartProductsByProductIds(
@@ -58,5 +58,9 @@ export class CartProductService {
     params: GetCartProductParams,
   ): Promise<DataPage<CartProduct>> {
     return this.cartProductRepository.getDataPage(params);
+  }
+
+  async getAllCartProductsByUserId(userId: string): Promise<CartProduct[]> {
+    return this.cartProductRepository.getAllByUserId(userId);
   }
 }

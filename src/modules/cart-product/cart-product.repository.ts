@@ -82,4 +82,12 @@ export class CartProductRepository extends Repository<CartProduct> {
 
     return { data, total };
   }
+
+  async getAllByUserId(userId: string): Promise<CartProduct[]> {
+    return this.createQueryBuilder('cartProducts')
+      .leftJoinAndSelect('cartProducts.product', 'product')
+      .where('cartProducts.userId = :userId', { userId })
+      .orderBy('cartProducts.createdAt', 'DESC')
+      .getMany();
+  }
 }

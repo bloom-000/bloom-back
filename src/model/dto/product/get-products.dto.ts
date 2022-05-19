@@ -1,7 +1,6 @@
 import { PageOptionsDto } from '../common/page-options.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsArray,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -13,11 +12,14 @@ import {
   Min,
 } from '@nestjs/class-validator';
 import { ProductSortOption } from '../../enum/product-sort-option.enum';
+import { Transform } from 'class-transformer';
 
 export class GetProductsDto extends PageOptionsDto {
   @ApiPropertyOptional({ isArray: true })
+  @Transform((params) =>
+    Array.isArray(params.value) ? params.value : [params.value],
+  )
   @IsNumberString(undefined, { each: true })
-  @IsArray()
   @IsOptional()
   categoryIds?: string[];
 
@@ -35,7 +37,6 @@ export class GetProductsDto extends PageOptionsDto {
 
   @ApiPropertyOptional({ isArray: true, enum: ProductSortOption })
   @IsEnum(ProductSortOption)
-  @IsArray()
   @IsOptional()
   sortOptions?: ProductSortOption[];
 
@@ -43,7 +44,6 @@ export class GetProductsDto extends PageOptionsDto {
   @IsInt({ each: true })
   @Min(0, { each: true })
   @Max(5, { each: true })
-  @IsArray()
   @IsOptional()
   ratings: number[];
 

@@ -71,15 +71,9 @@ export class ProductRepository extends Repository<Product> {
         'products.price',
         'products.oldPrice',
         'products.stockQuantity',
-        'images.id',
-        'images.createdAt',
-        'images.updatedAt',
-        'images.deletedAt',
-        'images.imagePath',
-        'images.order',
+        'products.primaryImagePath',
         'categories',
       ])
-      .leftJoin('products.images', 'images')
       .leftJoin('products.category', 'categories');
 
     if (categoryIds) {

@@ -48,4 +48,15 @@ export class CartProductController {
       userId: currentUserPayload.userId,
     });
   }
+
+  @ApiOkResponse()
+  @Get('/all')
+  @UseInterceptors(CurrentUserPayloadInterceptor)
+  async getAllCartProducts(
+    @CurrentUserPayload() currentUserPayload: UserPayload,
+  ): Promise<CartProduct[]> {
+    return this.cartProductService.getAllCartProductsByUserId(
+      currentUserPayload.userId,
+    );
+  }
 }
