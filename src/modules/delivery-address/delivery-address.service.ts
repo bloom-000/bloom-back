@@ -37,13 +37,13 @@ export class DeliveryAddressService {
     );
     if (!deliveryAddress) {
       throw new NotFoundException(
-        ExceptionMessageCode.SHIPPING_ADDRESS_NOT_FOUND,
+        ExceptionMessageCode.DELIVERY_ADDRESS_NOT_FOUND,
       );
     }
 
     if (deliveryAddress.userId !== currentUserId) {
       throw new ForbiddenException(
-        ExceptionMessageCode.CANT_EDIT_OTHERS_SHIPPING_ADDRESS,
+        ExceptionMessageCode.CANT_EDIT_OTHERS_DELIVERY_ADDRESS,
       );
     }
 
@@ -65,13 +65,13 @@ export class DeliveryAddressService {
       await this.deliveryAddressRepository.getUserIdById(deliveryAddressId);
     if (!deliveryAddressUserId) {
       throw new NotFoundException(
-        ExceptionMessageCode.SHIPPING_ADDRESS_NOT_FOUND,
+        ExceptionMessageCode.DELIVERY_ADDRESS_NOT_FOUND,
       );
     }
 
     if (currentUserId !== deliveryAddressUserId) {
       throw new ForbiddenException(
-        ExceptionMessageCode.CANT_DELETE_OTHERS_SHIPPING_ADDRESS,
+        ExceptionMessageCode.CANT_DELETE_OTHERS_DELIVERY_ADDRESS,
       );
     }
 
@@ -83,7 +83,7 @@ export class DeliveryAddressService {
       await this.deliveryAddressRepository.getDefaultByUserId(userId);
     if (!defaultShippingAddress) {
       throw new NotFoundException(
-        ExceptionMessageCode.DEFAULT_SHIPPING_ADDRESS_NOT_FOUND,
+        ExceptionMessageCode.DEFAULT_DELIVERY_ADDRESS_NOT_FOUND,
       );
     }
 
@@ -97,7 +97,7 @@ export class DeliveryAddressService {
   async validateDeliveryAddressById(deliveryAddressId: string): Promise<void> {
     if (!(await this.deliveryAddressRepository.existsById(deliveryAddressId))) {
       throw new NotFoundException(
-        ExceptionMessageCode.SHIPPING_ADDRESS_NOT_FOUND,
+        ExceptionMessageCode.DELIVERY_ADDRESS_NOT_FOUND,
       );
     }
   }
